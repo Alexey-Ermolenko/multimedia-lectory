@@ -38,7 +38,19 @@ $this->title = 'Лекции пользователя';
     <br>
     <br>
     <?
-    Yii::$app->userHelperClass->pre($model);
+    Yii::$app->userHelperClass->pre($model->id);
+    Yii::$app->userHelperClass->pre($model->user_id);
+    Yii::$app->userHelperClass->pre($model->video_id);
+    Yii::$app->userHelperClass->pre($model->name);
+    Yii::$app->userHelperClass->pre($model->description);
+    Yii::$app->userHelperClass->pre($model->keywords);
+    Yii::$app->userHelperClass->pre($model->content);
+    Yii::$app->userHelperClass->pre($model->task_group);
+    Yii::$app->userHelperClass->pre($model->autor);
+    Yii::$app->userHelperClass->pre($model->is_active);
+    Yii::$app->userHelperClass->pre($model->created_date);
+    Yii::$app->userHelperClass->pre($model->update_date);
+    Yii::$app->userHelperClass->pre($model->poster);
     /*
 
     Yii::$app->userHelperClass->pre($searchModel);
