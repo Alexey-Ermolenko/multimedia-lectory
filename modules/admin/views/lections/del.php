@@ -1,1 +1,4 @@
-<?php
+<?
+var_dump('del');
+
+?>
