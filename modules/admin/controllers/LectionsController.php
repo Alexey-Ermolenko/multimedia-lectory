@@ -140,26 +140,58 @@ class LectionsController extends Controller
     }
 
     public function actionRecVideo($id, $idscn){
-        $Scenario = Scenarios::find()->where(['id' => $idscn])->one();
-        $arListDemo = json_decode($Scenario->demo_list_json);
-        $arDemos = Demonstrations::find()->where(['in', 'id', $arListDemo])->all();
-        return $this->render('rec_video', [
-            'id'=>$id,
-            'idscn'=>$idscn,
-            'arDemos'=>$arDemos,
-            'lectionModel' => $this->findModel($id)
-        ]);
+        if (Yii::$app->request->isAjax)
+        {
+            //запись в бд в таблицу demonstration_time
+            //ML_TODO: обработка ошибок записи в бд
+            $demoList = json_decode(Yii::$app->request->post('jsonDemosList'), JSON_UNESCAPED_UNICODE);
+            if(!empty($demoList))
+            {
+                $dbConn = Yii::$app->db;
+                $dbConn->createCommand()->delete('demonstration_time', 'lection_id = '.$id)->execute();
+
+                foreach ($demoList as $n => $demoItem)
+                {
+                    $dbConn->createCommand()->insert(
+                        'demonstration_time',
+                        [
+                            'demonstration_id' => $demoItem['demoID'],
+                            'time' => $demoItem['demoTime'],
+                            'lection_id' => $id
+                        ]
+                    )->execute();
+                }
+                $msg = ['result' => 'ok'];
+                echo json_encode($msg, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        else
+        {
+            $Scenario = Scenarios::find()->where(['id' => $idscn])->one();
+            $video = Video::find()->where(['id'=>$this->findModel($id)->video_id])->one();
+            $arListDemo = json_decode($Scenario->demo_list_json);
+            $arDemos = Demonstrations::find()->where(['in', 'id', $arListDemo])->all();
+            return $this->render('rec_video', [
+                'id'=>$id,
+                'idscn'=>$idscn,
+                'arDemos'=>$arDemos,
+                'lectionModel' => $this->findModel($id),
+                'video' => $video
+            ]);
+        }
     }
 
     public function actionRecNovideo($id, $idscn){
         $Scenario = Scenarios::find()->where(['id' => $idscn])->one();
+        $video = Video::find()->where(['id'=>$this->findModel($id)->video_id])->one();
         $arListDemo = json_decode($Scenario->demo_list_json);
         $arDemos = Demonstrations::find()->where(['in', 'id', $arListDemo])->all();
         return $this->render('rec_video', [
             'id'=>$id,
             'idscn'=>$idscn,
             'arDemos'=>$arDemos,
-            'lectionModel' => $this->findModel($id)
+            'lectionModel' => $this->findModel($id),
+            'video' => $video
         ]);
     }
 
@@ -194,7 +226,7 @@ class LectionsController extends Controller
      */
     public function actionView($id)
     {
-
+        //Yii::$app->userHelperClass->pre();
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);

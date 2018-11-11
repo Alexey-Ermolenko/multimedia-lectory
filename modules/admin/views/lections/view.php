@@ -51,6 +51,7 @@ $this->title = 'Лекции пользователя';
     Yii::$app->userHelperClass->pre($model->created_date);
     Yii::$app->userHelperClass->pre($model->update_date);
     Yii::$app->userHelperClass->pre($model->poster);
+
     /*
 
     Yii::$app->userHelperClass->pre($searchModel);

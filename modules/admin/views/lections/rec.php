@@ -10,7 +10,7 @@ $this->title = 'Лекции пользователя';
 
 $arLection = ArrayHelper::toArray($model);
 $arScenarios = ArrayHelper::toArray($scenarioDataProvider->getModels());
-# Yii::$app->userHelperClass->pre($arLection);
+#Yii::$app->userHelperClass->pre($arLection);
 # Yii::$app->userHelperClass->pre($arScenarios);
 ?>
 <script>
@@ -97,11 +97,24 @@ $(document).ready(function() {
         <?
     }
     ?>
+
+    <?
+    //ML_TODO: проверка на наличие видео
+    //$arLection["video_id"];
+    ?>
     <div class="btn-group btn-group-sm js__options_list" role="group" aria-label="options" style="display: none;">
 
-        <button data-id_lect="<?=$model['id']?>" data-id_scen="" id="recNoVideoBtn" type="button" class="btn btn-primary btn-sm">Начать запись лекции и видео</button>
-        <button data-id_lect="<?=$model['id']?>" data-id_scen="" id="recVideoBtn" type="button" class="btn btn-primary btn-sm">Начать запись лекции с уже готовым видео</button>
-        <button  id="rec2DispBtn" type="button" class="btn btn-primary btn-sm">Начать запись лекции и видео на два экрана (В ходе разработки)</button>
+        <button data-id_lect="<?=$model['id']?>" data-id_scen="" id="recNoVideoBtn" type="button" class="btn btn-primary btn-sm">
+            Начать запись лекции и видео
+        </button>
+
+        <button data-id_lect="<?=$model['id']?>" data-id_scen="" id="recVideoBtn" type="button" class="btn btn-primary btn-sm" <?=($arLection["video_id"]) ? "":"disabled"?>>
+            Начать запись лекции с уже готовым видео
+        </button>
+
+        <button  id="rec2DispBtn" type="button" class="btn btn-primary btn-sm">
+            Начать запись лекции и видео на два экрана (В ходе разработки)
+        </button>
     </div>
     <hr>
 

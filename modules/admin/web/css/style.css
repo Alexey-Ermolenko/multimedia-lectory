@@ -41,7 +41,8 @@ div .row .video_item {
     margin-bottom: 0px; /* Отступ снизу */
 }
 .demo-icon-item  {
-	text-align: center;	
+	text-align: center;
+    width: 137px;
 }
 .slide-list-block .thumb img:hover  {
 	opacity: 0.2;
@@ -196,4 +197,20 @@ main {
     padding: 10px;
     margin-left: auto;
     margin-right: auto;
+}
+
+
+.card {
+    margin-bottom: 15px;
+}
+#demo_view_block {
+    padding: 0px;
+    margin-bottom: 0px;
+}
+
+#demo_play_canvas {
+    min-height: 360px;
+    min-width: 360px;
+    height: 100%;
+    width: 100%;
 }

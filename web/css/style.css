@@ -41,7 +41,8 @@ div .row .video_item {
     margin-bottom: 0px; /* Отступ снизу */
 }
 .demo-icon-item  {
-	text-align: center;	
+	text-align: center;
+    width: 137px;
 }
 .slide-list-block .thumb img:hover  {
 	opacity: 0.2;
