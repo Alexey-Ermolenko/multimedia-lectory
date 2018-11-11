@@ -226,9 +226,10 @@ class LectionsController extends Controller
      */
     public function actionView($id)
     {
-        //Yii::$app->userHelperClass->pre();
+        $model['LECTION'] = $this->findRelationModel($id);
+        $model['DEMO_ITEMS'] = $this->findDemonstrationsList($id);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
@@ -714,4 +715,70 @@ class LectionsController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    protected function findRelationModel($id)
+    {
+        /*
+        SELECT
+            l.id, l.name, l.poster, v.name, v.file_src
+        FROM
+            lections AS l
+        LEFT JOIN
+            video AS v
+        ON
+            v.lection_id=l.id
+        WHERE
+            l.id=1
+        */
+        $model = Lections::find()
+            ->select('* ,video.autor AS video_autor ,lections.autor AS lection_autor ,lections.id AS lection_id, video.id AS video_id, lections.name AS lection_name, video.name AS video_name')
+            ->from('lections')
+            ->leftjoin('video', 'video.id = lections.video_id')
+            ->andWhere('lections.id = '.$id)
+            ->asArray()
+            ->one();
+
+
+        if (($model) !== null)
+        {
+            return $model;
+        }
+        else
+        {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    function findDemonstrationsList($id)
+    {
+        /*
+        SELECT
+            demonstration_time.id, demonstration_time.lection_id AS lection_id, demonstration.autor,
+            demonstration.name, demonstration.icon_src, demonstration.src, demonstration_time.time
+        FROM
+            demonstration
+        LEFT JOIN
+            demonstration_time ON demonstration_time.demonstration_id = demonstration.id
+        WHERE
+            demonstration_time.lection_id =1
+        ORDER BY
+            `demonstration_time`.`time` +0 ASC
+        */
+        $demonstrations_model = Lections::find()
+            ->select('demonstration_time.id, demonstration_time.lection_id AS lection_id, demonstration.autor, demonstration.name, demonstration.icon_src, demonstration.src, demonstration_time.time')
+            ->from('demonstration')
+            ->leftJoin('demonstration_time', 'demonstration_time.demonstration_id = demonstration.id')
+            ->andWhere('demonstration_time.lection_id = '.$id)
+            ->addOrderBy(['`demonstration_time`.`time`'.'+0' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+
+        if (($demonstrations_model) !== null) {
+            return $demonstrations_model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
 }
