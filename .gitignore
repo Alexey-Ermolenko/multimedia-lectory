@@ -42,3 +42,8 @@ themes/classic/views/
 /video_lectory-master.zip
 /media_lectory_db.sql
 /requirements.php
+/docker-compose.yml
+/Vagrantfile
+/composer.json
+/composer.lock
+/vagrant
