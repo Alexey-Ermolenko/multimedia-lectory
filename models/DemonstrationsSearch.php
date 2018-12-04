@@ -53,7 +53,8 @@ class DemonstrationsSearch extends Demonstrations
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if (!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -61,12 +62,15 @@ class DemonstrationsSearch extends Demonstrations
 
 
 
-        if (Yii::$app->user->identity->role != 20)
-        {
-           $user_id = Yii::$app->user->id;
-        } else
+        if (Yii::$app->user->identity->role == 20)
         {
             $user_id ='';
+            $is_visible = '';
+        }
+        else
+        {
+            $user_id = Yii::$app->user->id;
+            $is_visible = '';
         }
 
         // grid filtering conditions
@@ -74,7 +78,7 @@ class DemonstrationsSearch extends Demonstrations
             'id' => $this->id,
             'user_id' => $user_id,
             'is_active' => $this->is_active,
-            'is_visible' => $this->is_visible,
+            'is_visible' => $is_visible,
             'create_date' => $this->create_date,
             'update_date' => $this->update_date
         ]);

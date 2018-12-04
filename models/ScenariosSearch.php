@@ -57,10 +57,19 @@ class ScenariosSearch extends Scenarios
             return $dataProvider;
         }
 
+        if (Yii::$app->user->identity->role == 20)
+        {
+            $user_id ='';
+        }
+        else
+        {
+            $user_id = Yii::$app->user->id;
+        }
+
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'user_id' => $this->user_id,
+            'user_id' => $user_id,
             'create_date' => $this->create_date,
             'update_date' => $this->update_date,
         ]);

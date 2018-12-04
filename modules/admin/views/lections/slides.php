@@ -17,22 +17,7 @@ $this->title = 'Слайды пользователя';
         </div>
     </div>
             <!--/.Page heading-->
-            <hr>
-            <!--
-
-            <div class="btn-group">
-                <a href="/admin/lections/index" role="button" class="btn btn-outline-default waves-effect">Лекции</a>
-                <a href="/admin/lections/slides" role="button" class="btn btn-default">Слайды</a>
-                <a href="#3"  role="button" class="btn btn-outline-default waves-effect">Сценарии</a>
-                <a href="#4"  role="button" class="btn btn-outline-default waves-effect">Запись лекций</a>
-                <a href="#5"  role="button" class="btn btn-outline-default waves-effect">Добавление видео</a>
-                <a href="#6"  role="button" class="btn btn-outline-default waves-effect">Синхронизация лекции</a>
-                <a href="#7"  role="button" class="btn btn-outline-default waves-effect">Экспорт лекции</a>
-            </div>
-
-            -->
-
-
+    <hr>
     <ul class="nav nav-tabs tabs-light-green darken-1" role="tablist">
         <li class="nav-item">
             <a class="nav-link waves-light" href="/admin/lections/index/">Лекции</a>
@@ -80,6 +65,7 @@ $this->title = 'Слайды пользователя';
                         'name:ntext',
                         'type:ntext',
                         'autor:ntext',
+                        'user_id:ntext',
                         'is_active:ntext',
                         'is_visible:ntext',
                         [

@@ -56,8 +56,8 @@ $array_demos = json_decode($model->demo_list_json, true);
                         Мои демонстрации:<br>
                         <div class="scenario_demo-block">
                             <?
-                            Yii::$app->userHelperClass->pre($userDemoDataProvider->getCount());
-                            Yii::$app->userHelperClass->pre($userDemoDataProvider->getTotalCount());
+                            #Yii::$app->userHelperClass->pre($userDemoDataProvider->getCount());
+                            #Yii::$app->userHelperClass->pre($userDemoDataProvider->getTotalCount());
                             # Yii::$app->userHelperClass->pre($userDemoDataProvider->getModels());
                             ?>
                             <!--Table-->
@@ -145,8 +145,8 @@ $array_demos = json_decode($model->demo_list_json, true);
                         Общие демонстрации:<br>
                         <div class="scenario_demo-block">
                             <?
-                            Yii::$app->userHelperClass->pre($allDemosDataProvider->getCount());
-                            Yii::$app->userHelperClass->pre($allDemosDataProvider->getTotalCount());
+                           # Yii::$app->userHelperClass->pre($allDemosDataProvider->getCount());
+                           # Yii::$app->userHelperClass->pre($allDemosDataProvider->getTotalCount());
                             # Yii::$app->userHelperClass->pre($userDemoDataProvider->getModels());
                             ?>
                             <!--Table-->
