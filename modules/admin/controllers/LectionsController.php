@@ -122,6 +122,7 @@ class LectionsController extends Controller
             $arListDemo = json_decode($Scenario->demo_list_json);
             $demos = Demonstrations::find()->where(['in', 'id', $arListDemo])->all();
             echo json_encode(ArrayHelper::toArray($demos), JSON_UNESCAPED_UNICODE);
+            exit();
         }
         else
         {

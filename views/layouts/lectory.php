@@ -89,7 +89,20 @@ $this->beginPage() ?>
                         </li>
                         <li class="nav-item avatar dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<img src="<?= Url::base(true).'/'.Yii::$app->user->identity->img_src ?>" class="img-fluid rounded-circle z-depth-0">
+                                <?
+                                if(Yii::$app->user->identity->img_src)
+                                {
+                                    ?>
+                                    <img src="<?= Url::base(true).'/'.Yii::$app->user->identity->img_src ?>" class="img-fluid rounded-circle z-depth-0">
+                                    <?
+                                }
+                                else
+                                {
+                                    ?>
+                                    <img src="web/img/user.png" class="img-fluid rounded-circle z-depth-0">
+                                    <?
+                                }
+                                ?>
 							</a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-purple" aria-labelledby="navbarDropdownMenuLink-5">
                                 <a class="dropdown-item waves-effect" href="/admin/page/user/">Профиль</a>
