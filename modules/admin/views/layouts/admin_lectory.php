@@ -22,8 +22,9 @@ $this->beginPage() ?>
         <?php $this->head() ?>
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!--
         <script type='text/javascript' src='https://mdbootstrap.com/wp-content/themes/mdbootstrap4/js/compiled.min.js?ver=4.5.4'></script>
-
+        -->
     </head>
     <body>
     <?php $this->beginBody() ?>
