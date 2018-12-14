@@ -107,6 +107,7 @@ class ScenariosController extends Controller
             ]);
         }
     }
+
     public function actionNewScenario()
     {
         //ML_TODO: actionNewScenario

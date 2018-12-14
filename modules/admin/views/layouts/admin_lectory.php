@@ -22,9 +22,9 @@ $this->beginPage() ?>
         <?php $this->head() ?>
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <!--
         <script type='text/javascript' src='https://mdbootstrap.com/wp-content/themes/mdbootstrap4/js/compiled.min.js?ver=4.5.4'></script>
-        -->
+
+                <!---->
     </head>
     <body>
     <?php $this->beginBody() ?>
@@ -140,19 +140,19 @@ $this->beginPage() ?>
             <div class="row">
                 <!--First column-->
                 <div class="col-md-6">
-                    <h5 class="title">Footer Content</h5>
-                    <p>Here you can use rows and columns here to organize your footer content.</p>
+                    <h5 class="title">Панель администратора</h5>
+                    <p>Тут можно создавать новые и редартировать мультимедиа-лекции</p>
                 </div>
                 <!--/.First column-->
 
                 <!--Second column-->
                 <div class="col-md-6">
-                    <h5 class="title">Links</h5>
+                    <h5 class="title">Ссылки</h5>
                     <ul>
-                        <li><a href="#!">Link 1</a></li>
-                        <li><a href="#!">Link 2</a></li>
-                        <li><a href="#!">Link 3</a></li>
-                        <li><a href="#!">Link 4</a></li>
+                        <li><a href="/">Мультимедиа-лекторий</a></li>
+                        <li><a href="/admin/">Главная</a></li>
+                        <li><a href="/admin/page/user/">Профиль</a></li>
+                        <li><a href="/admin/lections/">Лекции</a></li>
                     </ul>
                 </div>
                 <!--/.Second column-->
@@ -163,8 +163,7 @@ $this->beginPage() ?>
         <!--Copyright-->
         <div class="footer-copyright">
             <div class="container-fluid">
-                © 2015 Copyright: <a href="https://www.MDBootstrap.com"> MDBootstrap.com </a>
-
+                © <?= date('Y') ?> Copyright: <a href="https://www.MDBootstrap.com"> MDBootstrap.com </a>
             </div>
         </div>
         <!--/.Copyright-->
@@ -174,6 +173,7 @@ $this->beginPage() ?>
 
     <div class="hiddendiv common"></div>
     <?php $this->endBody() ?>
+
     </body>
     </html>
 <?php $this->endPage() ?>

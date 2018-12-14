@@ -52,7 +52,6 @@ if ($model['file_src'])
         $JSscript_str = app\components\VideoConverter::getYoutubeVideoData($model['file_src']);
     }
 }
-
 ?>
 <script>
     $(document).ready(function(){
@@ -189,7 +188,7 @@ if ($model['file_src'])
     </div>
     <hr>
     <div class="row">
-        <div class="col-md-6 ">
+        <div class="col-md-6">
             <div class="embed-responsive embed-responsive-16by9">
                 <video id="video" controls="controls" poster="<?=$model['poster']?>" preload="none">
                     <source src="<?=$video_src?>" type="video/<?=$video_ext?>"/>
@@ -208,10 +207,11 @@ if ($model['file_src'])
             </div>
         </div>
     </div>
-    <br>
-    <div id="current">0:00</div>
-    <div id="duration">0:00</div>
-    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <p>Просмотров: <?=$model['view_count']?></p>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="slide-list-block card card-body">

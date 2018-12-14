@@ -20,7 +20,7 @@ class LectionsSearch extends Lections
     public function rules()
     {
         return [
-            [['id', 'is_active', 'user_id', 'video_id'], 'integer'],
+            [['id', 'is_active', 'user_id', 'category_id', 'video_id'], 'integer'],
             [['name', 'description', 'keywords', 'content', 'task_group', 'autor', 'created_date', 'update_date','poster'], 'safe'],
         ];
     }
@@ -73,10 +73,9 @@ class LectionsSearch extends Lections
         $query->andFilterWhere([
             'id' => $this->id,
             'user_id' => $user_id,
+            'category_id' => $this->category_id,
             'video_id' => $this->video_id,
             'is_active' => $this->is_active,
-            'created_date' => $this->created_date,
-            'update_date' => $this->update_date,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
@@ -85,7 +84,9 @@ class LectionsSearch extends Lections
             ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'task_group', $this->task_group])
             ->andFilterWhere(['like', 'autor', $this->autor])
-            ->andFilterWhere(['like', 'poster', $this->poster]);
+            ->andFilterWhere(['like', 'poster', $this->poster])
+            ->andFilterWhere(['like', 'created_date', $this->created_date])
+            ->andFilterWhere(['like', 'update_date', $this->update_date]);
 
         return $dataProvider;
     }

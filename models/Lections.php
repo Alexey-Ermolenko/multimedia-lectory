@@ -12,11 +12,13 @@ use yii\db\ActiveRecord;
 use yii\data\SqlDataProvider;
 use yii\data\ActiveDataProvider;
 
+use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "lections".
  *
  * @property integer $id
  * @property integer $user_id
+ * @property integer $category_id
  * @property integer $video_id
  * @property string $name
  * @property string $description
@@ -52,7 +54,7 @@ class Lections extends ActiveRecord
         return [
             [['name', 'description', 'keywords', 'content', 'task_group', 'autor', 'is_active','poster'], 'required'],
             [['description', 'keywords', 'content', 'task_group', 'autor'], 'string'],
-            [['is_active', 'user_id', 'video_id'], 'integer'],
+            [['is_active', 'user_id', 'video_id', 'category_id'], 'integer'],
             [['created_date', 'update_date'], 'safe'],
             [['name', 'poster'], 'string', 'max' => 255],
         ];
@@ -66,6 +68,7 @@ class Lections extends ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
+            'category_id' => 'Category ID',
             'video_id' => 'Video',
             'name' => 'Name',
             'description' => 'Description',
@@ -102,5 +105,45 @@ class Lections extends ActiveRecord
         return $dataProvider;
     }
 
+    /**
+     * Запись в бд кол-во просмотров лекции
+     * @param integer $id
+     * @return bool
+     */
+    public static function setViewCount($id)
+    {
+//Yii::$app->userHelperClass->pre($session->get('lection_post_view'));
+
+        $session = Yii::$app->session;
+        // Если в сессии отсутствуют данные,
+        // создаём, увеличиваем счетчик, и записываем в бд
+        if (!isset($session['lection_post_view']))
+        {
+            $session->set('lection_post_view', [$id]);
+
+
+            Yii::$app->db->createCommand('
+                    UPDATE lections SET view_count = view_count + 1 WHERE id = '.$id
+            )->execute();
+
+            // Если в сессии уже есть данные то проверяем засчитывался ли данный пост
+            // если нет то увеличиваем счетчик, записываем в бд и сохраняем в сессию просмотр этого поста
+        }
+        else
+        {
+            if (!ArrayHelper::isIn($id, $session['lection_post_view']))
+            {
+                $array = $session['lection_post_view'];
+                array_push($array, $id);
+                $session->remove('lection_post_view');
+                $session->set('lection_post_view', $array);
+
+                Yii::$app->db->createCommand('
+                    UPDATE lections SET view_count = view_count + 1 WHERE id = '.$id
+                )->execute();
+            }
+        }
+        return true;
+    }
 
 }

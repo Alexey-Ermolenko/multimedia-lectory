@@ -37,10 +37,59 @@ class LectionsController extends Controller
      */
     public function actionIndex()
     {
+        $params = Yii::$app->request->queryParams;
+
+        #Yii::$app->userHelperClass->pre($params);
+
+        /*
+        SELECT
+        *
+        FROM
+        lections
+        WHERE
+        created_date LIKE '%2018-09%'
+        */
+
         $searchModel = new LectionsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->setPagination([
+            'pageSize' => 10
+        ]);
+
+        // /index?LectionsSearch[category_id]=1
+        // /index?LectionsSearch[created_date]=2018-04
+
+        $categories = Yii::$app->db->createCommand('
+            SELECT id, name, (SELECT count(*) FROM lections WHERE category_id = c.id) as count FROM category c HAVING count > 0
+        ')->queryAll();
+
+
+        $dates = Yii::$app->db->createCommand('
+            SELECT DISTINCT DATE_FORMAT(created_date, \'%Y-%m\') created_date FROM lections
+        ')->queryAll();
+
+        $popular_lections = Yii::$app->db->createCommand('
+            SELECT id, name, DATE_FORMAT(created_date, \'%d/%m/%Y\') created_date, view_count 
+            FROM lections 
+            ORDER BY view_count  DESC 
+            LIMIT 5
+        ')->queryAll();
+
+
+        if(Yii::$app->request->queryParams['LectionsSearch']['category_id'] != null)
+        {
+            $category = Yii::$app->db->createCommand('
+                SELECT * FROM category WHERE id = '.Yii::$app->request->queryParams['LectionsSearch']['category_id']
+            )->queryOne();
+
+        }
+
 
         return $this->render('index', [
+            'categories' => $categories,
+            'dates' => $dates,
+            'category' => $category,
+            'popular_lections' => $popular_lections,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -53,6 +102,8 @@ class LectionsController extends Controller
      */
     public function actionView($id)
     {
+        Lections::setViewCount($id);
+
         return $this->render('view', [
             'model' => $this->findRelationModel($id),
             'demonstrations_model' => $this->findDemonstrationsList($id),
