@@ -1,0 +1,4 @@
+*
+!.gitignore
+!.AdminAsset.php
+!.AppAsset.php

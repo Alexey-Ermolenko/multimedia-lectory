@@ -1,0 +1,216 @@
+/* Your custom styles */
+div .row .video_item {
+	margin-left: 10px;
+    margin-right: 10px;
+    /*border: 1px solid #c4c4c4 !important;*/
+}
+.lections {
+	margin-left: 0px;
+    margin-right: 0px;
+}
+
+.lection-description-block  {
+    margin-top: 10px;
+	width: 100%;
+}
+.other-lections-block  {
+    margin-top: 10px;
+	width: 100%;
+}
+
+.demo-block {
+    width: 100%;
+    min-height: 100%;
+}
+.slide-list-block {
+    width: 100%;
+	padding: 0;
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+
+.slide-list-block .thumb img  {
+	border: 1px solid #cccccc;
+	width: 120px;
+	height: 120px;
+	border-radius: 0px;
+ /*   border: 1px solid #ff0000;*/ /* Рамка вокруг иконки  текущей демонстрации*/
+    padding: 0px; /* Расстояние от картинки до рамки */
+    background: #666; /* Цвет фона */
+    margin-right: 0px; /* Отступ справа */
+    margin-bottom: 0px; /* Отступ снизу */
+}
+.demo-icon-item  {
+	text-align: center;
+    width: 137px;
+}
+.slide-list-block .thumb img:hover  {
+	opacity: 0.2;
+    background: #dc3545;
+    cursor: pointer;
+}
+
+.thumb {
+	display: flex;
+	height: 145px;
+	margin-bottom: 0px;
+}
+
+main {
+	margin-top: 65px !important;
+}
+
+.pagination_lections {
+	height: 70px !important;
+}
+
+.section_heading_block {
+	margin-left: 25px;
+    margin-right: 10px;
+}
+.section_heading_block {
+	
+}
+
+
+/* about STYLES */
+/* Carousel*/
+.carousel {
+			padding-top: 15px;
+            height: 525px;
+}
+
+@media (max-width: 776px) {
+            .carousel {
+                height: 325px;
+            }
+        }
+
+        .carousel-item,
+        .active {
+          /*  height: 100%;*/
+        }
+
+        .carousel-inner {
+            height: 100%;
+        }
+        /*Caption*/
+
+        .flex-center {
+            color: #fff;
+        }
+        .navbar .btn-group .dropdown-menu a:hover {
+            color: #000 !important;
+        }
+        .navbar .btn-group .dropdown-menu a:active {
+            color: #fff !important;
+        }
+/*-----------*/		
+		
+		
+		
+/*страница лекций в админке*/
+.lection-image-preview {
+    max-width: 130px;
+    float: left;
+}
+
+/*Form Process Steps*/
+.stepwizard-step p {
+    margin-top: 10px;    
+}
+
+.stepwizard-row {
+    display: table-row;
+}
+
+.stepwizard {
+    display: table;     
+    width: 100%;
+    position: relative;
+}
+
+.stepwizard-step button[disabled] {
+    opacity: 1 !important;
+    filter: alpha(opacity=100) !important;
+}
+
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-order: 0;
+    
+}
+
+.stepwizard-step {    
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+/* стиль формы /admin/page/user-edit */
+.edit_form-img {
+    height: 150px !important;
+}
+
+.demo-list-wrap
+{
+    margin-top: 35px;
+}
+
+.add-slide-form {
+    padding: 0px 30px;
+}
+
+.scenario_demo-block
+{
+
+}
+.scenario_demo-img
+{
+    width: 100px;
+    height: 100px;
+}
+
+.breadcrumb li
+{
+    margin-right: 10px;
+}
+
+.video-view video
+{
+    display: block;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.card {
+    margin-bottom: 15px;
+}
+#demo_view_block {
+    padding: 0px;
+    margin-bottom: 0px;
+}
+
+#demo_play_canvas {
+    min-height: 360px;
+    min-width: 360px;
+    height: 100%;
+    width: 100%;
+}
