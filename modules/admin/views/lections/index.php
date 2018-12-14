@@ -7,17 +7,12 @@ use yii\helpers\Url;
 
 $this->title = 'Лекции пользователя';
 ?>
-
-<!--Main layout-->
 <div class="container-fluid">
-
-    <!--Page heading-->
     <div class="row">
         <div class="col-md-12">
             <h1 class="h1-responsive">Мультимедиа-лекторий </h1>
         </div>
     </div>
-    <!--/.Page heading-->
     <hr>
     <ul class="nav nav-tabs tabs-light-green darken-1" role="tablist">
         <li class="nav-item">
@@ -33,10 +28,7 @@ $this->title = 'Лекции пользователя';
             <a class="nav-link waves-light" href="/admin/video/" role="tab">Видео</a>
         </li>
     </ul>
-
-    <br>
-    <br>
-    <br>
+    <br><br><br>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -75,8 +67,8 @@ $this->title = 'Лекции пользователя';
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header'=>'Действия',
-                'headerOptions' => ['width' => '365'],
-                'template' => '{view}{record}<br>{sync}{export}<br>{update}{delete}',
+                'headerOptions' => ['width' => '150'],
+                'template' => '{view}<br>{record}<br>{export}<br>{update}<br>{delete}',
                 'buttons' => [
                     'view' => function ($url, $model, $key) {
                         return Html::a(
@@ -93,15 +85,6 @@ $this->title = 'Лекции пользователя';
                             ['lections/rec?id='.$key],
                             [
                                 'class' => 'btn btn-sm btn-success',
-                            ]
-                        );
-                    },
-                    'sync' => function ($url, $model, $key) {
-                        return Html::a(
-                            '<i class="fa fa-cogs" aria-hidden="true"></i> Синхронизация',
-                            ['lections/sync?id='.$key],
-                            [
-                                'class' => 'btn btn-sm btn-default',
                             ]
                         );
                     },
@@ -138,9 +121,8 @@ $this->title = 'Лекции пользователя';
             ],
         ],
     ]); ?>
-
-    <a href="/admin/lections/new-lection/" class="btn btn-primary btn-lg"><i class="fa fa-bolt"></i> Создать новую лекцию</a>
-    <!--Table-->
+    <a href="/admin/lections/new-lection/" class="btn btn-primary btn-lg">
+        <i class="fa fa-bolt"></i> Создать новую лекцию
+    </a>
     <br><br>
 </div>
-<!--/.Main layout-->

@@ -143,14 +143,14 @@ class LectionsController extends Controller
     public function actionRecVideo($id, $idscn){
         if (Yii::$app->request->isAjax)
         {
-            //запись в бд в таблицу demonstration_time
             //ML_TODO: обработка ошибок записи в бд
+            $dbConn = Yii::$app->db;
+            $dbConn->createCommand()->delete('demonstration_time', 'lection_id = '.$id)->execute();
+            $dbConn->createCommand()->delete('command', 'lection_id = '.$id)->execute();
+
             $demoList = json_decode(Yii::$app->request->post('jsonDemosList'), JSON_UNESCAPED_UNICODE);
             if(!empty($demoList))
             {
-                $dbConn = Yii::$app->db;
-                $dbConn->createCommand()->delete('demonstration_time', 'lection_id = '.$id)->execute();
-
                 foreach ($demoList as $n => $demoItem)
                 {
                     $dbConn->createCommand()->insert(
@@ -162,9 +162,28 @@ class LectionsController extends Controller
                         ]
                     )->execute();
                 }
-                $msg = ['result' => 'ok'];
-                echo json_encode($msg, JSON_UNESCAPED_UNICODE);
             }
+            $commandList = json_decode(Yii::$app->request->post('jsonComandList'), JSON_UNESCAPED_UNICODE);
+            if(!empty($commandList))
+            {
+                foreach ($commandList as $commandItem)
+                {
+                    $commandString = json_encode($commandItem, JSON_UNESCAPED_UNICODE);
+                    $dbConn->createCommand()->insert(
+                        'command',
+                        [
+                            'command' => $commandString,
+                            'time' => $commandItem['time'],
+                            'lection_id' => $id
+                        ]
+                    )->execute();
+
+                }
+            }
+
+            $msg = ['result' => 'ok'];
+            echo json_encode($msg, JSON_UNESCAPED_UNICODE);
+            exit();
         }
         else
         {
@@ -229,6 +248,7 @@ class LectionsController extends Controller
     {
         $model['LECTION'] = $this->findRelationModel($id);
         $model['DEMO_ITEMS'] = $this->findDemonstrationsList($id);
+        $model['COMMANDS_ITEMS'] = $this->findCommandsList($id);
         return $this->render('view', [
             'model' => $model,
         ]);
@@ -766,7 +786,7 @@ class LectionsController extends Controller
             `demonstration_time`.`time` +0 ASC
         */
         $demonstrations_model = Lections::find()
-            ->select('demonstration_time.id, demonstration_time.lection_id AS lection_id, demonstration.autor, demonstration.name, demonstration.icon_src, demonstration.src, demonstration_time.time')
+            ->select('demonstration_time.id, demonstration_time.lection_id AS lection_id, demonstration.autor, demonstration.name, demonstration.type, demonstration.icon_src, demonstration.src, demonstration_time.time')
             ->from('demonstration')
             ->leftJoin('demonstration_time', 'demonstration_time.demonstration_id = demonstration.id')
             ->andWhere('demonstration_time.lection_id = '.$id)
@@ -777,6 +797,19 @@ class LectionsController extends Controller
 
         if (($demonstrations_model) !== null) {
             return $demonstrations_model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    function findCommandsList($id)
+    {
+        $commands_model = Yii::$app->db->createCommand(
+            'SELECT * FROM command WHERE lection_id = '.$id.' ORDER BY time ASC'
+        )->queryAll();
+
+        if (($commands_model) !== null) {
+            return $commands_model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }

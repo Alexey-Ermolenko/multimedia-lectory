@@ -12,46 +12,49 @@ $arLection = ArrayHelper::toArray($model);
 $arScenarios = ArrayHelper::toArray($scenarioDataProvider->getModels());
 #Yii::$app->userHelperClass->pre($arLection);
 # Yii::$app->userHelperClass->pre($arScenarios);
-?>
-<script>
-$(document).ready(function() {
-    $('#scenarion_list').material_select();
-    $('#scenarion_list').change(function() {
-         //console.log($('#scenarion_list').val());
-         $('#recVideoBtn').attr('data-id_scen', $('#scenarion_list').val());
-         $('#recNoVideoBtn').attr('data-id_scen', $('#scenarion_list').val());
-        $.ajax({
-            url: '/admin/lections/rec/',
-            type: "GET",
-            dataType: "json",
-            data: "id=" + $('#scenarion_list').val(),
-            success: function (data) {
-                $('.demo-list-view').show();
-                $('.js__options_list').show();
-                $('.card-body').html("");
-                data.forEach(function(item, i, arr) {
-                    //console.log( i + ": " + item.icon_src);
-                    $('.card-body').append('<img src="'+item.icon_src+'" height="100px" width="100px"/>');
-                });
 
-            }
+
+$script = <<< JS
+    $(document).ready(function() {
+        $('#scenarion_list').material_select();
+        $('#scenarion_list').change(function() {
+            //console.log($('#scenarion_list').val());
+            $('#recVideoBtn').attr('data-id_scen', $('#scenarion_list').val());
+            $('#recNoVideoBtn').attr('data-id_scen', $('#scenarion_list').val());
+            $.ajax({
+                url: '/admin/lections/rec/',
+                type: "GET",
+                dataType: "json",
+                data: "id=" + $('#scenarion_list').val(),
+                success: function (data) {
+                    $('.demo-list-view').show();
+                    $('.js__options_list').show();
+                    $('.card-body').html("");
+                    data.forEach(function(item, i, arr) {
+                        //console.log( i + ": " + item.icon_src);
+                        $('.card-body').append('<img src="'+item.icon_src+'" height="100px" width="100px"/>');
+                    });
+
+                }
+            });
+        });
+
+        $('#recVideoBtn').click(function(){
+            var id_lection = $(this).attr('data-id_lect');
+            var id_scenario = $(this).attr('data-id_scen');
+            window.location = '/admin/lections/rec-video?id='+id_lection+'&idscn='+id_scenario;
+        });
+
+        $('#recNoVideoBtn').click(function(){
+            var id_lection = $(this).attr('data-id_lect');
+            var id_scenario = $(this).attr('data-id_scen');
+            window.location = '/admin/lections/rec-novideo?id='+id_lection+'&idscn='+id_scenario;
+
         });
     });
-
-    $('#recVideoBtn').click(function(){
-        var id_lection = $(this).attr('data-id_lect');
-        var id_scenario = $(this).attr('data-id_scen');
-        window.location = '/admin/lections/rec-video?id='+id_lection+'&idscn='+id_scenario;
-    });
-
-    $('#recNoVideoBtn').click(function(){
-        var id_lection = $(this).attr('data-id_lect');
-        var id_scenario = $(this).attr('data-id_scen');
-        window.location = '/admin/lections/rec-novideo?id='+id_lection+'&idscn='+id_scenario;
-
-    });
-});
-</script>
+JS;
+$this->registerJs($script, \yii\web\View::POS_END);
+?>
 <!--Main layout-->
 <div class="container-fluid">
     <!--Page heading-->

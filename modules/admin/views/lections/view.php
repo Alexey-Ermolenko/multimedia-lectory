@@ -9,30 +9,12 @@ $this->title = 'Мультимедиа-лекторий | '. $model['LECTION']['
 $this->registerMetaTag(['name' => 'keywords', 'content' => $model['LECTION']['keywords']]);
 $this->registerMetaTag(['name' => 'description', 'content' => $model['LECTION']['description']]);
 
-//ML_TODO: DOWORK просмотр лекции в админке
+
+//ML_TODO: DOWORK просмотр лекции в админке; воспроизведение команд
 $arLection = [
     'video'=> $model['LECTION'],
     'demonstrations'=> $model['DEMO_ITEMS'],
-    'commands' => [
-        [
-            'id' => '1',
-            'lection_id' => '1',
-            'cmd'=> 'www2',
-            'time'=> '14',
-        ],
-        [
-            'id' => '2',
-            'lection_id' => '1',
-            'cmd'=> 'www2',
-            'time'=> '23',
-        ],
-        [
-            'id' => '3',
-            'lection_id' => '1',
-            'cmd'=> 'wwww',
-            'time'=> '58',
-        ]
-    ],
+    'commands' => $model['COMMANDS_ITEMS'],
 ];
 $json = json_encode($arLection, JSON_UNESCAPED_UNICODE);
 
@@ -54,14 +36,13 @@ if ($model['LECTION']['file_src'])
 }
 ?>
 <script>
+    currentDemo = null;
+
     $(document).ready(function(){
         var json = <?=$json?>;
 
-
-        console.log('json');
-        console.log(json.demonstrations.length);
-        console.log(json.commands.length);
-
+        //console.log('json');
+        //console.log(json.commands);
 
         //добавляем иконки из списка json
         for (var i = 0; i < json.demonstrations.length; i++)
@@ -99,40 +80,59 @@ if ($model['LECTION']['file_src'])
             $("#current").text(currentTime); //Change #current to currentTime
             $("#duration").text(duration);
 
-
             //переключение демонстрациий по текущему времени видео
             //вывод демонстрациии
             for (var i = 0; i < json.demonstrations.length; i++)
             {
-                if (json.demonstrations[i].time <= currentTime)
+                if (json.demonstrations[i].time <= currentTime && json.demonstrations[i+1].time >= currentTime)
                 {
-                    // console.clear();
-                    console.log('слайд = '+ json.demonstrations[i].id);
+                    if(json.demonstrations[i].type == 'slide')
+                    {
 
-                    var canvas = document.getElementById("demo_play_canvas");
-                    ctx = canvas.getContext('2d');
-
-                    canvas.width = canvas.offsetWidth;
-                    canvas.height = canvas.offsetHeight;
-
-                    var pic = new Image();
-                    pic.src = json.demonstrations[i].src;
+                        var slide = document.getElementById("demo_view_block");
+                        slide.innerHTML = '';
+                        var newCanvas = document.createElement('canvas');
+                        newCanvas.setAttribute('id', 'demo_play_canvas');
+                        slide.appendChild(newCanvas);
 
 
-                    ctx.drawImage(pic, 0, 0, canvas.width, canvas.height);
+                        var canvas = document.getElementById("demo_play_canvas");
+                        ctx = canvas.getContext('2d');
 
-                    $('.icon_item').css('border', '1px solid #000000');
-                    $('#'+json.demonstrations[i].id).css('border', '3px solid #ff0000');
+                        canvas.width = canvas.offsetWidth;
+                        canvas.height = canvas.offsetHeight;
 
+                        var pic = new Image();
+
+                        pic.src = json.demonstrations[i].src;
+
+                        ctx.drawImage(pic, 0, 0, canvas.width, canvas.height);
+                        //ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        $('.icon_item').css('border', '1px solid #000000');
+                        $('#'+json.demonstrations[i].id).css('border', '3px solid #ff0000');
+
+                        currentDemo = json.demonstrations[i].src;
+                    }
                 }
             }
 
-            //выполнение команды по текущему времени видео
+            if(json.commands.length > 0)
+            {
+                //выполнение команды по текущему времени видео
+                for (var i = 0; i < json.commands.length; i++)
+                {
+                    if (json.commands[i].time <= currentTime)
+                    {
+                        playCommand(json.commands[i]);
+                    }
+                }
+            }
         }
 
         //код для вставки с youtube.com
         videos = document.querySelectorAll('video');
-        for (var i = 0, l = videos.length; i < l; i++) {
+        for (var i = 0, l = videos.length; i < l; i++)
+        {
             var video = videos[i];
             var src = video.src || (function () {
                 var sources = video.querySelectorAll('source');
@@ -176,6 +176,67 @@ if ($model['LECTION']['file_src'])
         };
     })();
 
+
+    // Воспроизведение команд
+    function playCommand(command)
+    {
+        var currentCommandArr = JSON.parse(command.command);
+        switch(currentCommandArr.command)
+        {
+            case 'draw_line':
+                draw_line(
+                    currentCommandArr.wCanvas,
+                    currentCommandArr.hCanvas,
+                    currentCommandArr.x1,
+                    currentCommandArr.y1,
+                    currentCommandArr.x2,
+                    currentCommandArr.y2,
+                    currentCommandArr.color
+                );
+            break;
+            case 'clear_slide':
+                console.log('clear_slide');
+                clear_slide();
+            break;
+            default:
+                console.warn('nothing');
+            break;
+        }
+    }
+
+    function draw_line(width,height,x1,y1,x2,y2,color)
+    {
+        var canvas = document.getElementById("demo_play_canvas");
+        ctx = canvas.getContext('2d');
+
+        /*
+        var widthRatioSize=canvas.offsetWidth/width;
+        var heightRatioSize=canvas.offsetHeight/height;
+        ctx.strokeStyle = color_2D;
+        ctx.beginPath();
+        ctx.moveTo(x1*widthRatioSize, y1*heightRatioSize);
+        ctx.lineTo(x2*widthRatioSize, y2*heightRatioSize);
+        ctx.stroke();
+        */
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+
+    function clear_slide()
+    {
+        var canvas = document.getElementById("demo_play_canvas");
+        ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var pic = new Image();
+
+        pic.src = currentDemo;
+        ctx.drawImage(pic, 0, 0, canvas.width, canvas.height);
+    }
 </script>
 <div class="container-fluid">
     <div class="row">
@@ -222,10 +283,15 @@ if ($model['LECTION']['file_src'])
             </div>
         </div>
     </div>
-    <br>
-    <div id="current">0:00</div>
-    <div id="duration">0:00</div>
-    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <p>Просмотров: <?=$model['LECTION']['view_count']?></p>
+            <br>
+            <div id="current">0:00</div>
+            <div id="duration">0:00</div>
+            <br>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="slide-list-block card card-body">

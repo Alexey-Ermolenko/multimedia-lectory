@@ -11,6 +11,12 @@ $this->title = 'Мультимедиа-лекторий | Запись лекц�
 $this->registerMetaTag(['name' => 'keywords', 'content' => $model['keywords']]);
 $this->registerMetaTag(['name' => 'description', 'content' => $model['description']]);
 
+$this->registerJsFile('/modules/admin/web/js/jquery.imageLens.js',
+    [
+        'position' => \yii\web\View::POS_END,
+        'depends'=>'app\assets\AdminAsset'
+    ]
+);
 
 $this->params['breadcrumbs'][] = ['template' => "<li>{link}</li>\n",'label' => 'Лекции', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['template' => "<li>{link}</li>\n",'label' => 'Запись', 'url' => ['rec', 'id' => $lectionModel['id']]];
@@ -38,7 +44,6 @@ if ($video['file_src'])
     {
         $JSscript_str = '';
         $video_ext = pathinfo($video['file_src'])['extension'];
-
     }
     else
     {
@@ -48,9 +53,12 @@ if ($video['file_src'])
 }
 
 ?>
-<script>
-    isREC = false;
 
+<script>
+    var json = <?=$json?>;
+
+    isREC = false;
+    currentDemo = null;
     video = document.getElementById("video");
 
     $_GET = window.location.search.replace('?','').split('&').reduce(function(p,e) {
@@ -68,6 +76,7 @@ if ($video['file_src'])
                 alert("Внимание! Включен режим записи лекции");
                 video.play();
                 demosList = [];
+                comandList = [];
             }
             else
             {
@@ -75,9 +84,6 @@ if ($video['file_src'])
                 cancelRecording(isCancelled);
             }
         });
-
-
-        var json = <?=$json?>;
 
         //добавляем иконки из списка json
         for (var i = 0; i < json.demonstrations.length; i++)
@@ -104,13 +110,8 @@ if ($video['file_src'])
                 //ML_TODO: действия по клику на разные типы демонстрации
                 if ($(this).attr('data-type') == 'slide')
                 {
-                    var canvas = document.getElementById("demo_play_canvas");
-                    ctx = canvas.getContext('2d');
-                    canvas.width = canvas.offsetWidth;
-                    canvas.height = canvas.offsetHeight;
-                    var pic = new Image();
-                    pic.src = $(this).attr('src');
-                    ctx.drawImage(pic, 0, 0, canvas.width, canvas.height);
+                    currentDemo = $(this).attr('src');
+                    drawSlide($(this).attr('src'));
                     addDemo($(this).attr('data-slider_id'), curTime);
                 }
                 else
@@ -121,11 +122,13 @@ if ($video['file_src'])
 
         });
 
-
+        //При обновлении времени воспроизведения видео
         $("#video").on("timeupdate", function(event){
             onTrackedVideoFrame(this.currentTime, this.duration);
         });
-        function onTrackedVideoFrame(currentTime, duration){
+
+        function onTrackedVideoFrame(currentTime, duration)
+        {
             $("#current").text(currentTime); //Change #current to currentTime
             $("#duration").text(duration);
 
@@ -134,24 +137,26 @@ if ($video['file_src'])
             //переключение демонстрациий по клику
         }
 
-
         //Модальное окно Сохранения записи
         $("#save_btn").click(function(){
             video.pause();
             $('#save_lection_record_confirm_modal').modal('show');
         });
 
-
+        //Обработка модального окна подтверждения сохранения записи
         $('#save_lection_record_confirm_modal [data-cofirm="NO"]').click(function(){
             video.play();
         });
 
         $('#save_lection_record_confirm_modal [data-cofirm="OK"]').click(function(){
+
+            // Запись списка демонстрации
+            // Запись списка команд
             $.ajax({
-                url: '/admin/lections/rec-video?id='+$_GET['id']+'&idscn='+$_GET['idscn'],
+                url: '/admin/lections/rec-video?id=' + $_GET['id']+'&idscn='+ $_GET['idscn'],
                 type: "POST",
                 dataType: "json",
-                data: "jsonDemosList=" + JSON.stringify(demosList),
+                data: "jsonDemosList=" + JSON.stringify(demosList) + "&jsonComandList=" + JSON.stringify(comandList),
                 success: function (data) {
                     if(data.result == "ok")
                     {
@@ -161,17 +166,155 @@ if ($video['file_src'])
                     }
                     else
                     {
-                        alert('recording fail!!! please repeat');
+                        alert('Recording fail!!! please repeat');
                     }
                 }
             });
 
         });
 
+        //Обработка нажатия кнопок для записи команд для демонстрационного объекта
+        $(document).delegate('#rec_comands_btns_group [data-color="black"]', 'click', function(e){
+            console.log('black');
+            changeColor('#000', this);
+        });
+        $(document).delegate('#rec_comands_btns_group [data-color="red"]', 'click', function(e){
+            console.log('red');
+            changeColor('#f00', this);
+        });
+        $(document).delegate('#rec_comands_btns_group [data-color="blue"]', 'click', function(e){
+            console.log('blue');
+            changeColor('#00f', this);
+        });
+        $(document).delegate('#rec_comands_btns_group [data-color="green"]', 'click', function(e){
+            console.log('green');
+            changeColor('#0f0', this);
+        });
+        $(document).delegate('#rec_comands_btns_group [data-zoom]', 'click', function(e){
+            console.log('data-zoom');
+            zoomSlide();
+        });
+        $(document).delegate('#rec_comands_btns_group [data-clear]', 'click', function(e){
+            console.log('data-clear');
+            clearCanvas();
+        });
+
+        function drawSlide(slideSrc)
+        {
+            var canvas = document.getElementById("demo_play_canvas");
+            ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            var pic = new Image();
+            pic.src = slideSrc;
+
+            //Запрет на рисование
+            dctrl = { drawing: false };
+            //События мышки
+            canvas.addEventListener("mousedown", canvas_mousedown);
+            canvas.addEventListener("mousemove", canvas_mousemove);
+            canvas.addEventListener("mouseup", canvas_mouseup);
+            //Размер картинки
+            var y = canvas.height;
+            var x = canvas.width;
+            ctx.drawImage(pic, 0, 0, canvas.width, canvas.height);
+        }
+
+        function canvas_mouseup(event)
+        {
+            dctrl.drawing = false;
+        }
+
+        function canvas_mousemove(event)
+        {
+            if(dctrl.drawing == true)
+            {
+                //Получаем координаты
+                var rect = event.target.getBoundingClientRect();
+                var mousex = event.clientX - rect.left;
+                var mousey = event.clientY - rect.top;
+                //Рисуем линию
+                draw_line(dctrl.prevx, dctrl.prevy, mousex, mousey);
+                dctrl.prevx = mousex;
+                dctrl.prevy = mousey;
+            }
+        }
+
+        function canvas_mousedown(event)
+        {
+            var rect = event.target.getBoundingClientRect();
+            dctrl.drawing = true;
+            draw_line();
+            dctrl.prevx = event.clientX - rect.left;
+            dctrl.prevy = event.clientY - rect.top;
+        }
+
+        function changeColor(color, imgElem)
+        {
+            ctx.strokeStyle = color;
+            // 	Меняем текущий цвет рисования
+            //context.strokeStyle = color;
+
+            // Меняем стиль элемента <img>, по которому щелкнули
+
+            // Возвращаем ранее выбранный элемент <img> в нормальное состояние
+        }
+
+        function clearCanvas()
+        {
+            var canvas = document.getElementById("demo_play_canvas");
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            var pic = new Image();
+            pic.src = currentDemo;
+            ctx.drawImage(pic, 0, 0, canvas.width, canvas.height);
+            //Запись об чистке слайда
+            sendClearSlideCommand();
+        }
+
+        /*
+        ML_TODO: Zoom
+        function zoomSlide()
+        {
+            var canvas = document.getElementById("demo_play_canvas");
+            if (canvas.getContext)
+            {
+                //Заполнение canvas для лупы
+                canvasLoop = document.getElementById("canvasLoop");
+                var ctxL = canvasLoop.getContext('2d');
+                var picL = new Image();
+                picL.src = canvas.toDataURL("image/png");
+                canvasLoop.width=canvas.width*2;
+                canvasLoop.height=canvas.height*2;
+                //Получение картинки из canvas для лупы
+                picL.onload=function()
+                {
+                    var yL= canvasLoop.height;
+                    var xL= canvasLoop.width;
+                    ctxL.drawImage(picL, 0, 0, xL, yL);
+                    $("#demo_play_canvas").imageLens({ lensSize: 200, borderSize: 8, borderColor: '#fofof', lensCss: "zoom" });
+                }
+            }
+        }
+        */
+
+        //Рисуем линию
+        function draw_line(x1, y1, x2, y2)
+        {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+            //Запись о рисовании
+            sendDrawCommand(x1,y1,x2,y2,ctx.strokeStyle, );
+        }
+
 
         //код для вставки с youtube.com
         videos = document.querySelectorAll('video');
-        for (var i = 0, l = videos.length; i < l; i++) {
+        for (var i = 0, l = videos.length; i < l; i++)
+        {
             var video = videos[i];
             var src = video.src || (function () {
                 var sources = video.querySelectorAll('source');
@@ -199,7 +342,8 @@ if ($video['file_src'])
 
     //удобое представление времени
     var timeFormat = (function (){
-        function num(val){
+        function num(val)
+        {
             val = Math.floor(val);
             return val < 10 ? '0' + val : val;
         }
@@ -248,11 +392,47 @@ if ($video['file_src'])
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             demosList = [];
+            comandList = [];
             $('#record_switch').prop('checked', false);
         }
         else
         {
             $('#record_switch').prop('checked', true);
+        }
+    }
+
+    /*
+    * Запись команды чистки слайда
+    * */
+    function sendClearSlideCommand()
+    {
+        if (isREC==true)
+        {
+            comandList.push({command: "clear_slide", time: curTime});
+        }
+    }
+
+    /*
+    * Запись команды рисования
+    * */
+    function sendDrawCommand(x1, y1, x2, y2, color)
+    {
+        if (isREC==true)
+        {
+            var canvas = document.getElementById("demo_play_canvas");
+            var wCanvas = canvas.width;
+            var hCanvas = canvas.height;
+            comandList.push({
+                command: "draw_line",
+                wCanvas: wCanvas,
+                hCanvas: hCanvas,
+                x1:x1,
+                y1:y1,
+                x2:x2,
+                y2:y2,
+                color: color,
+                time: curTime
+            });
         }
     }
 </script>
@@ -308,12 +488,39 @@ if ($video['file_src'])
                     <input id="record_switch" type="checkbox">
                     <span class="lever"></span>
                 </label>
-                <button type="button" id="save_btn" class="btn-sm btn btn-success"><i class="fa fa-save" aria-hidden="true"></i> Сохранить запись</button>
+                <button type="button" id="save_btn" class="btn-sm btn btn-success">
+                    <i class="fa fa-save" aria-hidden="true"></i> Сохранить запись
+                </button>
             </div>
 
         </div>
         <div class="col-md-6">
             <!-- ML_TODO: DOWORK Кнопки управления -->
+            <div class="card" id="rec_comands_btns">
+                <div class="btn-group btn-group-sm" role="group" aria-label="Basic example" id="rec_comands_btns_group">
+                    <button type="button" class="btn btn-block btn-elegant btn-sm" data-color="black">
+                        <i class="fa fa-paint-brush" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-block btn-danger btn-sm" data-color="red">
+                        <i class="fa fa-paint-brush" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-block btn-indigo btn-sm" data-color="blue">
+                        <i class="fa fa-paint-brush" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-block btn-light-green btn-sm" data-color="green">
+                        <i class="fa fa-paint-brush" aria-hidden="true"></i>
+                    </button>
+                    <!--
+                    <button type="button" class="btn btn-block btn-mdb-color btn-sm" data-zoom>
+                        <i class="fa fa-search-plus" aria-hidden="true"></i>
+                    </button>
+                    -->
+                    <button type="button" class="btn btn-block btn-mdb-color btn-sm" data-clear>
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+            </div>
         </div>
     </div>
 
