@@ -44,14 +44,14 @@ at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
 You can then install this project template using the following command:
 
 ~~~
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+php composer.phar create-project --prefer-dist yiisoft/yii2-app-basic multimedia-lectory.local
 ~~~
-
-Now you should be able to access the application through the following URL, assuming `basic` is the directory
+ 
+Now you should be able to access the application through the following URL, assuming `multimedia-lectory.local` is the directory
 directly under the Web root.
 
 ~~~
-http://lectory.local/
+http://multimedia-lectory.local/
 ~~~
 
 ### Install from an Archive File
@@ -68,10 +68,14 @@ Set cookie validation key in `config/web.php` file to some random secret string:
 ],
 ```
 
+Finaly you can download project using by 
+~~~
+git clone https://github.com/Alexey-Ermolenko/multimedia-lectory.git
+~~~
 You can then access the application through the following URL:
 
 ~~~
-http://lectory.local/
+http://multimedia-lectory.local/
 ~~~
 
 **NOTES:**

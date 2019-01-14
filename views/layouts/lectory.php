@@ -52,9 +52,6 @@ $this->beginPage() ?>
                     <li class="nav-item">
                         <a class="nav-link waves-effect waves-light" href="/site/about">О сайте</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link waves-effect waves-light" href="/site/contact">Контакты</a>
-                    </li>
                 </ul>
                 <!-- Links -->
 

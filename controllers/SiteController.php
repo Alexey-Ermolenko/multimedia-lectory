@@ -20,6 +20,9 @@ use app\models\Lections;
 use app\models\LectionsSearch;
 use yii\data\Pagination;
 
+
+use yii\helpers\Url;
+
 class SiteController extends Controller
 {
     /**
@@ -145,11 +148,11 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
+     * Displays about page.
      *
      * @return Response|string
      */
-    public function actionContact()
+    public function actionAbout()
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
@@ -157,19 +160,9 @@ class SiteController extends Controller
 
             return $this->refresh();
         }
-        return $this->render('contact', [
+        return $this->render('about', [
             'model' => $model,
         ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 
 

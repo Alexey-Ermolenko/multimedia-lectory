@@ -12,8 +12,7 @@ nbproject
 # windows thumbnail cache
 Thumbs.db
 
-# composer vendor dir
-/vendor
+
 
 # composer itself is not needed
 composer.phar
@@ -46,4 +45,11 @@ themes/classic/views/
 /Vagrantfile
 /composer.json
 /composer.lock
-/vagrant
+/vagrant/
+# composer vendor dir
+/vendor/
+
+/runtime/
+/tests/
+
+index.php
