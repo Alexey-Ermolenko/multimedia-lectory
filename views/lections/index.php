@@ -138,7 +138,7 @@ $this->title = 'Мультимедиа-лекторий | Лекции';
                                         <div class="row mb-4">
                                             <div class="view overlay"><a><div class="mask rgba-white-slight waves-effect waves-light"></div></a></div>
                                             <div class="col-12">
-                                                <a><?=$lectionItem['name']?> <span class="badge teal badge-pill font-small"><?=$lectionItem['view_count']?></span></a>
+                                                <a href="<?=Url::toRoute(['lections/view', 'id' => $lectionItem['id']])?>"><?=$lectionItem['name']?> <span class="badge teal badge-pill font-small"><?=$lectionItem['view_count']?></span></a>
                                                 <div class="post-data">
                                                     <p class="font-small grey-text mb-0">
                                                         <i class="fa fa-clock-o"></i> <?=$lectionItem['created_date']?>

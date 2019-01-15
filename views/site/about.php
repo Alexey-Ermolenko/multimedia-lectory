@@ -7,7 +7,7 @@ use yii\helpers\Html;
 $this->title = 'About';
 $this->params['breadcrumbs'][] = $this->title;
 */
-$this->title = 'О нас';
+$this->title = 'Мультимедиа-лекторий | О нас';
 ?>
 <!--Main layout-->
 <div class="container">

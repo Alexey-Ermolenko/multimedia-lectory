@@ -70,11 +70,12 @@ $this->title = 'Мультимедиа-лекторий | Главная';
             */
         }
 
-
         while (($i % 3) != 0)
         {
             ?>
-            <div class="col-lg-4 wow fadeIn" data-wow-delay="0.2s" style="animation-name: none; visibility: visible;">&nbsp;</div>
+            <div class="col-lg-4 wow fadeIn" data-wow-delay="0.2s" style="animation-name: none; visibility: visible;">
+                &nbsp;
+            </div>
             <?
             $i++;
         }
