@@ -34,10 +34,22 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
+            'viewPath' => '@app/mail',
+            'htmlLayout' => 'layouts/html',
+            'textLayout' => 'layouts/text',
+            'messageConfig' => [
+                'charset' => 'UTF-8',
+                'from' => ['noreply@lectory.000webhostapp.com' => 'lectory'],
+            ],
             'useFileTransport' => true,
+
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'ssl://smtp.yandex.com',
+                'username' => 'lectorymultimedia',
+                'password' => '4tge453rw4',
+                'port' => '465',
+            ],
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -64,6 +76,12 @@ $config = [
                     'basePath' => '@app/messages',
                 ],
             ],
+        ],
+        'sphinx' => [
+            'class' => 'yii\sphinx\Connection',
+            'dsn' => 'mysql:host=127.0.0.1;port=9306;',
+            'username' => 'root',
+            'password' => '',
         ],
     ],
     'modules' => [

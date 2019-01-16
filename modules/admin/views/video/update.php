@@ -42,14 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <a class="nav-link waves-light active" href="/admin/video/" role="tab">Видео</a>
         </li>
     </ul>
-    <?
-    Yii::$app->userHelperClass->pre($model->user_id);
-    Yii::$app->userHelperClass->pre($model->name);
-    Yii::$app->userHelperClass->pre($model->autor);
-    Yii::$app->userHelperClass->pre($model->is_active);
-    Yii::$app->userHelperClass->pre($model->is_visible);
-    Yii::$app->userHelperClass->pre($model->file_src);
-    ?>
+
     <br><br>
     <?= Breadcrumbs::widget([
         'homeLink' => ['label' => 'Главная', 'url' => '/'],

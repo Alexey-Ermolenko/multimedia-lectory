@@ -44,9 +44,7 @@ class LectionsSearch extends Lections
     public function search($params)
     {
         $query = Lections::find();
-
         // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -60,14 +58,23 @@ class LectionsSearch extends Lections
         }
 
 
-
-        if (Yii::$app->user->identity->role != 20)
+        if($params['module'] == 'admin')
         {
-           $user_id = Yii::$app->user->id;
-        } else
+            if (Yii::$app->user->identity->role != 20)
+            {
+                $user_id = Yii::$app->user->id;
+            }
+            else
+            {
+                $user_id ='';
+            }
+        }
+        else
         {
             $user_id ='';
         }
+
+
 
         // grid filtering conditions
         $query->andFilterWhere([

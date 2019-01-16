@@ -17,6 +17,7 @@ use app\models\PasswordResetRequestForm;
 use app\models\ResetPasswordForm;
 use yii\data\ActiveDataProvider;
 use app\models\Lections;
+use app\models\Contact;
 use app\models\LectionsSearch;
 use yii\data\Pagination;
 
@@ -154,20 +155,25 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+        //ML_TODO: actionAbout
+        $model = new Contact();
 
-            return $this->refresh();
+        if ($model->load(Yii::$app->request->post()) && $model->save() && $model->sendEmail('contactMail', 'Пример письма', ['paramExample' => '123']))
+        {
+
+            Yii::$app->session->setFlash('aboutFormSubmitted');
+            //return $this->render('about', ['model' => $model]);
+            return $this->render('about', ['model' => $model]);
         }
-        return $this->render('about', [
-            'model' => $model,
-        ]);
+        else
+        {
+            return $this->render('about', ['model' => $model]);
+        }
     }
-
 
     public function actionSearch()
     {
+        //ML_TODO: actionSearch
         return $this->render('search');
     }
 

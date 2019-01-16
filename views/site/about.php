@@ -194,38 +194,51 @@ $this->title = 'Мультимедиа-лекторий | О нас';
             <strong>Свяжитесь с нами</strong>
         </h5>
         <div class="card-body px-lg-5 pt-0">
-            <form class="md-form" style="color: #757575;">
-                <input type="text" id="materialContactFormName" class="form-control" placeholder="Ваше имя">
-                <label for="materialContactFormName"></label>
-                <input type="email" id="materialContactFormEmail" class="form-control" placeholder="Ваше e-mail">
-                <label for="materialContactFormEmail"></label>
-                <div>
-                    <select class="mdb-select" id="materialSelect">
-                        <option value="" disabled selected>Feedback</option>
-                        <option value="1">Option 1</option>
-                        <option value="2">Option 2</option>
-                        <option value="3">Option 3</option>
-                    </select>
-                    <label for="materialSelect"></label>
-                </div>
-                <textarea type="text" id="materialContactFormMessage" class="form-control md-textarea" rows="3" placeholder="Сообщение"></textarea>
-                <label for="materialContactFormMessage"></label>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="materialContactFormCopy">
-                    <label class="form-check-label" for="materialContactFormCopy">
-                        Отправить мне копию сообщения
-                    </label>
-                </div>
+            <?
+            if (Yii::$app->session->hasFlash('aboutFormSubmitted'))
+            {
+                #Yii::$app->userHelperClass->pre($model->name);
+                #Yii::$app->userHelperClass->pre($model->toArray());
+                ?>
                 <br>
-                <div class="form-check">
-                    <p>
-                        Отправляя сообщение вы соглашаетесь с условиями обработки данных
-                    </p>
+                <div class="alert alert-success">
+                    Благодарим Вас за обращение к нам. Мы ответим вам как можно скорее.
                 </div>
-                <button class="btn btn-outline-info btn-rounded btn-block z-depth-0 my-4 waves-effect" type="submit">
-                    Отправить
-                </button>
-            </form>
+                <?
+            }
+            else
+            {
+                ?>
+                <form id="contact-form" action="/site/about" method="post" class="md-form" style="color: #757575;">
+
+                    <input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" />
+
+                    <input type="text" name="Contact[name]" aria-required="true" id="materialContactFormName" class="form-control" placeholder="Ваше имя">
+                    <label for="materialContactFormName"></label>
+                    <input type="email" name="Contact[email]" aria-required="true" id="materialContactFormEmail" class="form-control" placeholder="Ваше e-mail">
+                    <label for="materialContactFormEmail"></label>
+
+                    <textarea type="text" name="Contact[message]" id="materialContactFormMessage" class="form-control md-textarea" rows="3" placeholder="Сообщение"></textarea>
+                    <label for="materialContactFormMessage"></label>
+                    <div class="form-check">
+                        <input type="checkbox" name="Contact[copy_email]" class="form-check-input" id="materialContactFormCopy">
+                        <label class="form-check-label" for="materialContactFormCopy">
+                            Отправить мне копию сообщения
+                        </label>
+                    </div>
+                    <br>
+                    <div class="form-check">
+                        <p>
+                            Отправляя сообщение вы соглашаетесь с условиями обработки данных
+                        </p>
+                    </div>
+                    <button name="contact-button" class="btn btn-outline-info btn-rounded btn-block z-depth-0 my-4 waves-effect" type="submit">
+                        Отправить
+                    </button>
+                </form>
+                <?
+            }
+            ?>
         </div>
     </div>
 </div>

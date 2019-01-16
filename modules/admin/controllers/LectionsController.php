@@ -90,6 +90,8 @@ class LectionsController extends Controller
 
     public function actionIndex()
     {
+        #Yii::$app->userHelperClass->pre(array_merge(Yii::$app->request->queryParams, ['module'=>$this->module->id]));
+
         /*
         SELECT user.id, username, name, lections.id
         FROM lections
@@ -99,7 +101,7 @@ class LectionsController extends Controller
       //  $_GET['LectionsSearch']['user_id'] = $user_id;
 
         $searchModel = new LectionsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, ['module'=>$this->module->id]));
 
         //$userModel = Lections::find();
 
