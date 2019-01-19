@@ -53,7 +53,8 @@ class Contact extends \yii\db\ActiveRecord
      * @return bool whether the model passes validation
      */
     public function sendEmail($view, $subject, $params = [])
-    {/*
+    {
+        /*
         $content = "<p>Email: " . $this->email . "</p>";
         $content .= "<p>Name: " . $this->name . "</p>";
         $content .= "<p>Date: " . date("Y-m-d H:i:s") . "</p>";
@@ -86,13 +87,40 @@ class Contact extends \yii\db\ActiveRecord
 
         #Yii::$app->userHelperClass->pre('777');
         #    die();
+        // lectorymultimedia@yandex.ru
+        // a.o.ermolenko@gmail.com
+        /*
+        $date = date('Y-m-d H:i:s');
+        $to = "a.o.ermolenko@gmail.com, lectorymultimedia@yandex.ru";
+        $subject = "Contact->sendEmail()";
+        $message = '<!DOCTYPE html>
+            <html>
+            <head>
+            <meta http-equiv="content-type" content="text/html" />
+            <title></title>
+            </head>
+            <body>
+                <h1>ЖОПА</h1> '.$date.'
+                <p>wdwqdqwds af adsf df dsfdf</p>
+            </body>
+            </html>';
+        $from = "lectorymultimedia@yandex.ru";
+        $headers = 'MIME-Version: 1.0' . "\r\n";
+        $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+        $headers .= "From:" . $from;
+
+        mail($to,$subject,$message,$headers);
+        */
+
+        $date = date('Y-m-d H:i:s');
 
         \Yii::$app->mailer->getView()->params['userName'] = "username";
 
         $result = \Yii::$app->mailer->compose([
             'html' => $view . '-html',
             'text' => $view . '-text',
-        ], $params)->setTo(["a.o.ermolenko@gmail.com" => "username"])
+        ], $params)->setTo(["lectorymultimedia@yandex.ru" => "user"])
+            ->setFrom("lectorymultimedia@yandex.ru")
             ->setSubject($subject)
             ->send();
 

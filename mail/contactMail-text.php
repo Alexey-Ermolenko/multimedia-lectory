@@ -2,9 +2,9 @@
 
 /** @var $this \yii\web\View */
 /** @var $link string */
-/** @var $paramExample string */
+/** @var params string */
 
 ?>
     Текст письма...
 
-    Переданный параметр: <?= $paramExample ?>
+    Переданный параметр: <?= $params ?>

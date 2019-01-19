@@ -278,6 +278,7 @@ class VideoController extends Controller
      */
     public function actionDelete($id)
     {
+        //ML_TODO: Удаление
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

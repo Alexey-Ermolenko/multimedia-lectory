@@ -37,18 +37,32 @@ $config = [
             'viewPath' => '@app/mail',
             'htmlLayout' => 'layouts/html',
             'textLayout' => 'layouts/text',
+
+
+            'useFileTransport' => false,
+            'transport' => [
+                /*'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.yandex.com',
+                'username' => 'lectorymultimedia@yandex.ru',
+                'password' => '4tge453rw4',
+                'encryption' => 'ssl',
+                'port' => '465',*/
+                'class' => 'Swift_SmtpTransport',
+                'encryption' => 'tls',
+                'host' => 'smtp.gmail.com',
+                'port' => '587',
+                'streamOptions' => [
+                    'ssl' => [
+                        'allow_self_signed' => true,
+                        'verify_peer' => false
+                    ],
+                ],
+                'username' => 'lectorymultimedia@gmail.com',
+                'password' => 'uhouszycfczfoahm',
+            ],
             'messageConfig' => [
                 'charset' => 'UTF-8',
                 'from' => ['noreply@lectory.000webhostapp.com' => 'lectory'],
-            ],
-            'useFileTransport' => true,
-
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'host' => 'ssl://smtp.yandex.com',
-                'username' => 'lectorymultimedia',
-                'password' => '4tge453rw4',
-                'port' => '465',
             ],
         ],
         'log' => [

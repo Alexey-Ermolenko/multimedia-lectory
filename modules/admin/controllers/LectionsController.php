@@ -716,8 +716,17 @@ class LectionsController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDel($id)
     {
+        //ML_TODO: Удаление
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionSlideDelete($id)
+    {
+        //ML_TODO: Удаление
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

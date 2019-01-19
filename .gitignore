@@ -46,8 +46,8 @@ themes/classic/views/
 /vagrant/
 
 # composer vendor dir
+/web/assets/
 /vendor/
-
 /runtime/
 /tests/
 
