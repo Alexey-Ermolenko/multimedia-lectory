@@ -256,25 +256,86 @@ class LectionsController extends Controller
         ]);
     }
 
-
     public function actionSlides()
     {
-        $searchModel = new DemonstrationsSearch();
+        $user_id = Yii::$app->user->identity->getId();
 
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchUserDemo = new DemonstrationsSearch();
+        // if user = ADMIN then view all demo fore edit, alse user and all demo
+        if (Yii::$app->user->identity->role == 20)
+        {
+            //SELECT * FROM  `demonstration` WHERE is_active = 1
+            $userDemoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `demonstration`',
+                [':user_id' => $user_id])->queryScalar();
+            $userDemoDataProvider = new SqlDataProvider([
+                'sql' => 'SELECT * FROM  `demonstration`',
+                'params' => [':user_id' => $user_id],
+                'totalCount' => $userDemoCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                        'type',
+                    ],
+                ],
+            ]);
+            $allDemosDataProvider = null;
+        }
+        else
+        {
+            $userDemoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `demonstration` WHERE is_active = 1 AND user_id =:user_id',
+                [':user_id' => $user_id])->queryScalar();
 
-        $dataProvider->pagination->pageSize=10;
-        # $userModel = Lections::find();
+            $userDemoDataProvider = new SqlDataProvider([
+                'sql' => 'SELECT * FROM  `demonstration` WHERE is_active = 1 AND user_id =:user_id',
+                'params' => [':user_id' => $user_id],
+                'totalCount' => $userDemoCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                        'type',
+                    ],
+                ],
+            ]);
 
-       #$model = Demonstrations::find()->all();
-
-        #Yii::$app->userHelperClass->pre($dataProvider);
+            //SELECT * FROM  `demonstration` WHERE is_active = 1 AND is_visible = 1
+            $allDemosCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `demonstration` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `demonstration` WHERE is_active = 1 AND user_id =:user_id)',
+                [':user_id' => $user_id])->queryScalar();
+            $allDemosDataProvider = new SqlDataProvider([
+                'sql' => 'SELECT * FROM  `demonstration` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `demonstration` WHERE is_active = 1 AND user_id =:user_id)',
+                'params' => [':user_id' => $user_id],
+                'totalCount' => $allDemosCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                        'type',
+                    ],
+                ],
+            ]);
+        }
 
         return $this->render('slides', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'user_id' => $user_id,
+            'searchUserDemo' => $searchUserDemo,
+            'userDemoDataProvider' => $userDemoDataProvider,
+            'allDemosDataProvider' => $allDemosDataProvider,
         ]);
     }
+
 
     public function actionNewSlide()
     {
@@ -505,11 +566,6 @@ class LectionsController extends Controller
 
     }
 
-
-    public function actionVideo()
-    {
-        return $this->render('video');
-    }
 
     /**
      * Creates a new Lections model.

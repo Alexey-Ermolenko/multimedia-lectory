@@ -50,10 +50,10 @@ $this->title = 'Слайды пользователя';
         <div class="col-md-12">
            <!-- ML_TODO: таблица с демострациями --->
             <div class="demo-list-wrap">
-                <h2>Демонстрационные объекты</h2>
+                <h2>Демонстрации пользователя:</h2>
                 <?= GridView::widget([
-                    'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
+                    'dataProvider' => $userDemoDataProvider,
+                    'filterModel' => $searchUserDemo,
                     'tableOptions' => [
                         'class' => 'table table-sm table-striped table-bordered table-hover'
                     ],
@@ -68,39 +68,38 @@ $this->title = 'Слайды пользователя';
                         'user_id:ntext',
                         'is_active:ntext',
                         'is_visible:ntext',
+                        'create_date:datetime',
+                        'update_date:datetime',
                         [
                             'label' => 'ICON',
                             'format' => 'raw',
                             'value' => function($data){
-                                return Html::img( Url::to($data->icon_src, true),[
+                                return Html::img( Url::to($data['icon_src'], true),[
                                     'alt'=>'icon_src',
                                     'style' => 'width:85px;'
                                 ]);
                             },
                         ],
-                        // 'created_at',
-                        // 'updated_at',
-
                         [
                             'class' => 'yii\grid\ActionColumn',
                             'header'=>'Действия',
                             'headerOptions' => ['width' => '225'],
                             'template' => '{update} {delete}',
                             'buttons' => [
-                                'update' => function ($url, $model, $key) {
+                                'update' => function ($key, $data, $index) {
                                     return Html::a(
                                         '<i class="fa fa-edit"></i>',
-                                        ['lections/edit-slide?id='.$key],
+                                        ['lections/edit-slide?id='.$data['id']],
                                         [
                                             'class' => 'btn btn-sm btn-primary',
                                         ]
                                     );
                                 },
-                                'delete' => function ($url,$model, $key) {
+                                'delete' => function ($key, $data, $index) {
                                     //ML_TODO: confirm для удаления
                                     return Html::a(
                                         '<i class="fa fa-remove"></i>',
-                                        ['lections/slide-delele?id='.$key],
+                                        ['lections/slide-delele?id='.$data['id']],
                                         [
                                             'class' => 'btn btn-sm btn-danger',
                                             'onclick'=>'confirm("Удалить слайд?");'
@@ -111,9 +110,55 @@ $this->title = 'Слайды пользователя';
                         ],
                     ],
                 ]); ?>
+                <?
+                #    Yii::$app->userHelperClass->pre($userDemoDataProvider->getModels());
+                #   Yii::$app->userHelperClass->pre($allDemosDataProvider->getModels());
+                ?>
             </div>
-
         </div>
+        <?
+        if($allDemosDataProvider !== null)
+        {
+            ?>
+            <div class="col-md-12">
+                <div class="demo-list-wrap">
+                    <h2>Общие демонстрации:</h2>
+                    <?= GridView::widget([
+                        'dataProvider' => $allDemosDataProvider,
+                        'filterModel' => $searchUserDemo,
+                        'tableOptions' => [
+                            'class' => 'table table-sm table-striped table-bordered table-hover'
+                        ],
+                        'layout'=>"{sorter}\n{pager}\n{summary}\n{items}",
+
+                        'showHeader'=>TRUE,
+                        'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                            'name:ntext',
+                            'type:ntext',
+                            'autor:ntext',
+                            'user_id:ntext',
+                            'is_active:ntext',
+                            'is_visible:ntext',
+                            [
+                                'label' => 'ICON',
+                                'format' => 'raw',
+                                'value' => function($data){
+                                    return Html::img( Url::to($data['icon_src'], true),[
+                                        'alt'=>'icon_src',
+                                        'style' => 'width:85px;'
+                                    ]);
+                                },
+                            ],
+                            'create_date:datetime',
+                            'update_date:datetime',
+                        ],
+                    ]); ?>
+                </div>
+            </div>
+            <?
+        }
+        ?>
 
     </div>
 

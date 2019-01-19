@@ -57,9 +57,9 @@ class ScenariosController extends Controller
      */
     public function actionIndex()
     {
-        //ML_TODO: user_id
-      //  $user_id = Yii::$app->user->id;
-     //   $_GET['ScenariosSearch']['user_id'] = $user_id;
+        //  ML_TODO: user_id
+        //  $user_id = Yii::$app->user->id;
+        //  $_GET['ScenariosSearch']['user_id'] = $user_id;
 
 
         $searchModel = new ScenariosSearch();

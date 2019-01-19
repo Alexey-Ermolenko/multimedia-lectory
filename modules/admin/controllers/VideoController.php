@@ -8,6 +8,7 @@ use app\models\VideoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\SqlDataProvider;
 
 /**
  * VideoController implements the CRUD actions for Video model.
@@ -41,12 +42,84 @@ class VideoController extends Controller
      */
     public function actionIndex()
     {
+        //  $searchModel = new VideoSearch();
+        //  $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $user_id = Yii::$app->user->identity->getId();
         $searchModel = new VideoSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        // if user = ADMIN then view all video for edit, alse user and all video
+        if (Yii::$app->user->identity->role == 20)
+        {
+            //SELECT * FROM  `demonstration` WHERE is_active = 1
+            $userVideosCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video`',
+                [':user_id' => $user_id])->queryScalar();
+            $userVideoDataProvider = new SqlDataProvider([
+                'sql' => 'SELECT * FROM  `video`',
+
+                'totalCount' => $userVideosCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                        'type',
+                    ],
+                ],
+            ]);
+            $allVideosDataProvider = null;
+        }
+        else
+        {
+            $userVideosCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND user_id =:user_id',
+                [':user_id' => $user_id])->queryScalar();
+
+            $userVideoDataProvider = new SqlDataProvider([
+                'sql' => 'SELECT * FROM  `video` WHERE is_active = 1 AND user_id =:user_id',
+                'params' => [':user_id' => $user_id],
+                'totalCount' => $userVideosCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                        'type',
+                    ],
+                ],
+            ]);
+
+            //SELECT * FROM  `video` WHERE is_active = 1 AND is_visible = 1
+            $allVideosCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
+                [':user_id' => $user_id])->queryScalar();
+            $allVideoDataProvider = new SqlDataProvider([
+                'sql' => 'SELECT * FROM  `video` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
+                'params' => [':user_id' => $user_id],
+                'totalCount' => $allVideosCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                        'type',
+                    ],
+                ],
+            ]);
+        }
 
         return $this->render('index', [
+            'user_id' => $user_id,
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'userVideoDataProvider' => $userVideoDataProvider,
+            'allVideoDataProvider' => $allVideoDataProvider,
         ]);
     }
 
@@ -142,22 +215,7 @@ class VideoController extends Controller
         {
             return $this->render('create');
         }
-        /*
-        $model = new Video();
 
-        Yii::$app->userHelperClass->pre('action Create');
-        Yii::$app->userHelperClass->pre(Yii::$app->request->post());
-
-        die();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-        */
     }
 
     /**

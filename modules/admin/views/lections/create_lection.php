@@ -288,24 +288,23 @@ $this->params['breadcrumbs'][] = 'Новая лекция';
 
             <!--Footer-->
             <div class="modal-footer justify-content-center flex-column flex-md-row">
+                <!--
                 <span class="mr-4">Spread the word!</span>
                 <div>
-                    <a type="button" class="btn-floating btn-sm btn-fb">
-                        <i class="fa fa-facebook"></i>
-                    </a>
-                    <!--Twitter-->
-                    <a type="button" class="btn-floating btn-sm btn-tw">
-                        <i class="fa fa-twitter"></i>
-                    </a>
-                    <!--Google +-->
-                    <a type="button" class="btn-floating btn-sm btn-gplus">
-                        <i class="fa fa-google-plus"></i>
-                    </a>
-                    <!--Linkedin-->
-                    <a type="button" class="btn-floating btn-sm btn-ins">
-                        <i class="fa fa-linkedin"></i>
-                    </a>
-                </div>
+                <a type="button" class="btn-floating btn-sm btn-fb">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a type="button" class="btn-floating btn-sm btn-tw">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a type="button" class="btn-floating btn-sm btn-gplus">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                <a type="button" class="btn-floating btn-sm btn-ins">
+                    <i class="fa fa-linkedin"></i>
+                </a>
+            </div>
+                -->
                 <button type="button" class="btn btn-outline-primary btn-rounded btn-md ml-4" data-dismiss="modal">
                     Close
                 </button>
