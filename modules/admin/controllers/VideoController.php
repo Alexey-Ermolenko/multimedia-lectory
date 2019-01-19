@@ -49,7 +49,7 @@ class VideoController extends Controller
         $searchModel = new VideoSearch();
 
         // if user = ADMIN then view all video for edit, alse user and all video
-        if (Yii::$app->user->identity->role == 20)
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
         {
             //SELECT * FROM  `demonstration` WHERE is_active = 1
             $userVideosCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video`',

@@ -3,7 +3,7 @@
 
 <div class="container-fluid">
 <?
-if (Yii::$app->user->identity->role == 20)
+if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
 {
     echo '<h1>Редактирование пользователя</h1>';
 } else {

@@ -61,8 +61,7 @@ class DemonstrationsSearch extends Demonstrations
         }
 
 
-
-        if (Yii::$app->user->identity->role == 20)
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
         {
             $user_id ='';
             $is_visible = '';

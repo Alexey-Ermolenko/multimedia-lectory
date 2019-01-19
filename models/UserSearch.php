@@ -24,7 +24,7 @@ class UserSearch extends User
     {
         // only fields in rules() are searchable
         return [
-            [['id', 'role', 'status'], 'integer'],
+            [['id', 'status'], 'integer'],
             [['username', 'email'], 'safe'],
         ];
     }

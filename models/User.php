@@ -14,8 +14,8 @@ use yii\data\ActiveDataProvider;
 
 class User extends ActiveRecord implements IdentityInterface
 {
-    const ROLE_ADMIN = 20;
-    const ROLE_USER = 10;
+    const ROLE_ADMIN = 'ADMIN';
+    const ROLE_USER = 'USER';
 
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
@@ -46,7 +46,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['email'], 'string'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-            ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_ADMIN]],
+
         ];
     }
 

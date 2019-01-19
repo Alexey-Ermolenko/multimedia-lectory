@@ -173,7 +173,7 @@ class ScenariosController extends Controller
             $searchUserDemo = new DemonstrationsSearch();
 
             //Список демонстраций доступных всем: (или админу если пользователь админ role=20)
-            if (Yii::$app->user->identity->role == 20)
+            if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
             {
                 //SELECT * FROM  `demonstration` WHERE is_active = 1
                 $allDemosCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `demonstration` WHERE is_active = 1 AND id NOT IN (SELECT id FROM  `demonstration` WHERE is_active = 1 AND user_id =:user_id)',
@@ -295,7 +295,7 @@ class ScenariosController extends Controller
            $searchUserDemo = new DemonstrationsSearch();
 
            //Список демонстраций доступных всем: (или админу если пользователь админ role=20)
-           if (Yii::$app->user->identity->role == 20)
+           if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
            {
                //SELECT * FROM  `demonstration` WHERE is_active = 1
                $allDemosCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `demonstration` WHERE is_active = 1 AND id NOT IN (SELECT id FROM  `demonstration` WHERE is_active = 1 AND user_id =:user_id)',

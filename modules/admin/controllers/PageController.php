@@ -219,7 +219,7 @@ class PageController extends Controller
     {
         if (isset($id))
         {
-            if (Yii::$app->user->identity->role == 20)
+            if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
             {
                 if (User::deleteAll(['in', 'id', $id]))
                 {

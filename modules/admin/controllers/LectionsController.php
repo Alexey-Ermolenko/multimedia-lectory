@@ -262,7 +262,7 @@ class LectionsController extends Controller
 
         $searchUserDemo = new DemonstrationsSearch();
         // if user = ADMIN then view all demo fore edit, alse user and all demo
-        if (Yii::$app->user->identity->role == 20)
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
         {
             //SELECT * FROM  `demonstration` WHERE is_active = 1
             $userDemoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `demonstration`',
@@ -335,7 +335,6 @@ class LectionsController extends Controller
             'allDemosDataProvider' => $allDemosDataProvider,
         ]);
     }
-
 
     public function actionNewSlide()
     {
@@ -671,7 +670,7 @@ class LectionsController extends Controller
 
 
             //  Список видео доступных всем: (или админу если пользователь админ role=20)
-            if (Yii::$app->user->identity->role == 20)
+            if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
             {
                 //  SELECT * FROM  `video` WHERE is_active = 1
                 $allVideoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',

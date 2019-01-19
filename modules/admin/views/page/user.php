@@ -7,7 +7,7 @@ $this->registerJsFile('/modules/admin/web/js/admin.js', ['depends' => [\yii\web\
 <div class="container-fluid">
     <h1>User Info</h1>
     <?
-    if (Yii::$app->user->identity->role == 20)
+    if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
     {
         ?>
 		<h2>Данный пользователь - Администратор</h2>
