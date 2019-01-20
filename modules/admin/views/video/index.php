@@ -152,7 +152,7 @@ $this->params['breadcrumbs'][] = "Видео";
                                 //ML_TODO: confirm для удаления
                                 return Html::a(
                                     '<i class="fa fa-remove"></i>',
-                                    ['/admin/video/delele?id='.$data['id']],
+                                    ['/admin/video/del?id='.$data['id']],
                                     [
                                         'class' => 'btn btn-sm btn-danger',
                                         'onclick'=>'confirm("Удалить слайд?");'

@@ -30,7 +30,7 @@ class VideoController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['GET'],
                 ],
             ],
         ];
@@ -334,12 +334,48 @@ class VideoController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDel($id)
     {
-        //ML_TODO: Удаление
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
+        {
+            if(stristr($model->file_src, 'repository') == true)
+            {
+                if (unlink(substr($model->file_src, 1)))
+                {
+                    $this->findModel($id)->delete();
+                    return $this->redirect(['video/index']);
+                }
+                else
+                {
+                    Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                }
+            }
+        }
+        else
+        {
+            $user_id = Yii::$app->user->identity->getId();
 
-        return $this->redirect(['index']);
+            if ($model->user_id == $user_id)
+            {
+                if(stristr($model->file_src, 'repository') == true)
+                {
+                    if (unlink(substr($model->file_src, 1)))
+                    {
+                        $this->findModel($id)->delete();
+                        return $this->redirect(['video/index']);
+                    }
+                    else
+                    {
+                        Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                    }
+                }
+            }
+            else
+            {
+                Yii::$app->userHelperClass->pre("forbitten");
+            }
+        }
     }
 
     /**

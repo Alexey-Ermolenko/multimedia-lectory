@@ -99,7 +99,7 @@ $this->title = 'Слайды пользователя';
                                     //ML_TODO: confirm для удаления
                                     return Html::a(
                                         '<i class="fa fa-remove"></i>',
-                                        ['lections/slide-delele?id='.$data['id']],
+                                        ['lections/slide-del?id='.$data['id']],
                                         [
                                             'class' => 'btn btn-sm btn-danger',
                                             'onclick'=>'confirm("Удалить слайд?");'

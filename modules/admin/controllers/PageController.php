@@ -216,6 +216,7 @@ class PageController extends Controller
 
     public function actionAdminUserDel($id = false)
     {
+        //ML_TODO: Удаление
         if (isset($id))
         {
             if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)

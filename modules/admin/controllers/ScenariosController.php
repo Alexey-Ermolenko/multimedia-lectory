@@ -358,8 +358,27 @@ class ScenariosController extends Controller
     */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-        return $this->redirect(['index']);
+        $model = $this->findModel($id);
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
+        {
+            $this->findModel($id)->delete();
+            return $this->redirect(['index']);
+        }
+        else
+        {
+            $user_id = Yii::$app->user->identity->getId();
+            if ($model->user_id == $user_id)
+            {
+                $this->findModel($id)->delete();
+                return $this->redirect(['index']);
+            }
+            else
+            {
+                Yii::$app->userHelperClass->pre("forbitten");
+            }
+        }
+
+
     }
 
     /**

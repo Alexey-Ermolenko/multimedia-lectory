@@ -882,17 +882,95 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
     public function actionDel($id)
     {
         //ML_TODO: Удаление
-        $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        $lectionModel = $this->findModel($id);
+
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
+        {
+            if(stristr($lectionModel->poster, 'repository') == true)
+            {
+                if (unlink(substr($lectionModel->poster, 1)))
+                {
+                    $lectionModel->delete();
+                    return $this->redirect(['lections/index']);
+                }
+                else
+                {
+                    Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                }
+            }
+        }
+        else
+        {
+            $user_id = Yii::$app->user->identity->getId();
+            if ($lectionModel->user_id == $user_id)
+            {
+                if(stristr($lectionModel->poster, 'repository') == true)
+                {
+                    if (unlink(substr($lectionModel->poster, 1)))
+                    {
+                        $lectionModel->delete();
+                        return $this->redirect(['lections/index']);
+                    }
+                    else
+                    {
+                        Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                    }
+                }
+            }
+            else
+            {
+                Yii::$app->userHelperClass->pre("forbitten");
+            }
+        }
     }
 
-    public function actionSlideDelete($id)
+    public function actionSlideDel($id)
     {
         //ML_TODO: Удаление
-        $this->findModel($id)->delete();
+        $demoModel = $this->findDemoModel($id);
 
-        return $this->redirect(['index']);
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
+        {
+            if ((stristr($demoModel->icon_src, 'repository') == true) && (stristr($demoModel->src, 'repository') == true))
+            {
+                if ( unlink(substr($demoModel->icon_src, 1)) && unlink(substr($demoModel->src, 1)) )
+                {
+                    $this->findDemoModel($id)->delete();
+                    return $this->redirect(['lections/slides/']);
+                }
+                else
+                {
+                    Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                }
+            }
+        }
+        else
+        {
+            $user_id = Yii::$app->user->identity->getId();
+            if ($demoModel->user_id == $user_id)
+            {
+                if ((stristr($demoModel->icon_src, 'repository') == true) && (stristr($demoModel->src, 'repository') == true))
+                {
+                    if ( unlink(substr($demoModel->icon_src, 1)) && unlink(substr($demoModel->src, 1)) )
+                    {
+                        $this->findDemoModel($id)->delete();
+                        return $this->redirect(['lections/slides/']);
+                    }
+                    else
+                    {
+                        Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                    }
+                }
+            }
+            else
+            {
+                Yii::$app->userHelperClass->pre("forbitten");
+            }
+        }
+        die();
+        //$this->findModel($id)->delete();
+        //return $this->redirect(['index']);
     }
 
     /**
@@ -905,6 +983,15 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
     protected function findModel($id)
     {
         if (($model = Lections::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    protected function findDemoModel($id)
+    {
+        if (($model = Demonstrations::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
