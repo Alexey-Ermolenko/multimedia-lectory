@@ -12,10 +12,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\base\InvalidParamException;
 
-
 use yii\data\SqlDataProvider;
-
-
 
 
 /**
@@ -28,6 +25,7 @@ class PageController extends Controller
         $this->enableCsrfValidation = false;
         return parent::beforeAction($action);
     }
+
     public function actions()
     {
         return [
@@ -36,6 +34,7 @@ class PageController extends Controller
             ],
         ];
     }
+    
     public function behaviors()
     {
         return [

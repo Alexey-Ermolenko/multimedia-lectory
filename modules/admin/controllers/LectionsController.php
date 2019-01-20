@@ -90,18 +90,18 @@ class LectionsController extends Controller
 
     public function actionIndex()
     {
-        #Yii::$app->userHelperClass->pre(array_merge(Yii::$app->request->queryParams, ['module'=>$this->module->id]));
-
         /*
+        Yii::$app->userHelperClass->pre(array_merge(Yii::$app->request->queryParams, ['module'=>$this->module->id]));
+
         SELECT user.id, username, name, lections.id
         FROM lections
         LEFT JOIN user ON lections.user_id = user.id
-        */
-      //  $user_id = Yii::$app->user->id;
-      //  $_GET['LectionsSearch']['user_id'] = $user_id;
 
-        $searchModel = new LectionsSearch();
-        $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, ['module'=>$this->module->id]));
+        //  $user_id = Yii::$app->user->id;
+        //  $_GET['LectionsSearch']['user_id'] = $user_id;
+
+        //$searchModel = new LectionsSearch();
+        // $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, ['module'=>$this->module->id]));
 
         //$userModel = Lections::find();
 
@@ -111,6 +111,119 @@ class LectionsController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+        */
+
+        $user_id = Yii::$app->user->identity->getId();
+        $searchModel = new LectionsSearch();
+
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
+        {
+            /*
+            SELECT
+                l.id,
+                l.user_id,
+                u.username as user_name,
+                l.video_id,
+                l.category_id,
+                c.name as category_name,
+                l.name,
+                l.description,
+                l.keywords,
+                l.content,
+                l.task_group,
+                l.autor,
+                l.is_active,
+                l.created_date,
+                l.update_date,
+                l.poster,
+                l.view_count
+
+            FROM
+                lections l
+            LEFT JOIN
+                category c
+            ON
+                c.id = l.category_id
+            LEFT JOIN
+                user u
+            ON
+                u.id = l.user_id
+            */
+            /*
+            SELECT
+	            count(l.id) as count
+            FROM
+	            lections l
+            */
+
+            $sql = 'SELECT l.id, l.user_id, u.username as user_name, l.video_id, l.category_id, c.name as category_name, l.name, l.description, l.keywords, l.content, l.task_group, l.autor, l.is_active, l.created_date, l.update_date, l.poster, l.view_count FROM lections l LEFT JOIN  category c ON  c.id = l.category_id LEFT JOIN  user u ON u.id = l.user_id';
+
+            $userLectionCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `lections`',
+                [':user_id' => $user_id])->queryScalar();
+            $userLectionDataProvider = new SqlDataProvider([
+                'sql' => $sql,
+                'totalCount' => $userLectionCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                    ],
+                ],
+            ]);
+
+            $allLectionDataProvider = null;
+        }
+        else
+        {
+            $userLectionCount = Yii::$app->db->createCommand('SELECT count(*) FROM  lections l WHERE l.user_id =:user_id',
+                [':user_id' => $user_id])->queryScalar();
+            $userLectionDataProvider = new SqlDataProvider([
+                'sql' => 'SELECT l.id, l.user_id, u.username as user_name, l.video_id, l.category_id, c.name as category_name, l.name, l.description, l.keywords, l.content, l.task_group, l.autor, l.is_active, l.created_date, l.update_date, l.poster, l.view_count FROM lections l LEFT JOIN  category c ON  c.id = l.category_id LEFT JOIN  user u ON u.id = l.user_id WHERE l.user_id = :user_id',
+                'params' => [':user_id' => $user_id],
+                'totalCount' => $userLectionCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                    ],
+                ],
+            ]);
+
+            /*SELECT l.id, l.user_id, u.username as user_name, l.video_id, l.category_id, c.name as category_name, l.name, l.description, l.keywords, l.content, l.task_group, l.autor, l.is_active, l.created_date, l.update_date, l.poster, l.view_count FROM lections l LEFT JOIN  category c ON  c.id = l.category_id LEFT JOIN  user u ON u.id = l.user_id
+WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_active = 1 AND l.user_id = :user_id)*/
+            $allLectionCount = Yii::$app->db->createCommand('SELECT count(*) FROM lections l WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_active = 1 AND l.user_id = :user_id)',
+                [':user_id' => $user_id])->queryScalar();
+            $allLectionDataProvider = new SqlDataProvider([
+                'sql' => 'SELECT l.id, l.user_id, u.username as user_name, l.video_id, l.category_id, c.name as category_name, l.name, l.description, l.keywords, l.content, l.task_group, l.autor, l.is_active, l.created_date, l.update_date, l.poster, l.view_count FROM lections l LEFT JOIN  category c ON  c.id = l.category_id LEFT JOIN  user u ON u.id = l.user_id
+WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_active = 1 AND l.user_id = :user_id)',
+                'params' => [':user_id' => $user_id],
+                'totalCount' => $allLectionCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                    ],
+                ],
+            ]);
+        }
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'userLectionDataProvider' => $userLectionDataProvider,
+            'allLectionDataProvider' => $allLectionDataProvider,
         ]);
     }
 
@@ -541,11 +654,6 @@ class LectionsController extends Controller
                 throw new NotFoundHttpException('The requested page does not exist.');
             }
         }
-    }
-
-    public function actionScenario()
-    {
-        return $this->render('scenario');
     }
 
     public function actionEditScenario($id)

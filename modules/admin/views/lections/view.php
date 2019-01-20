@@ -5,7 +5,7 @@ use app\models\LectionsSearch;
 use app\models\User;
 use yii\helpers\Url;
 
-$this->title = 'Мультимедиа-лекторий | '. $model['LECTION']['name'];
+$this->title = 'Мультимедиа-лекторий | '. $model['LECTION']['lection_name'];
 $this->registerMetaTag(['name' => 'keywords', 'content' => $model['LECTION']['keywords']]);
 $this->registerMetaTag(['name' => 'description', 'content' => $model['LECTION']['description']]);
 
@@ -245,6 +245,9 @@ if ($model['LECTION']['file_src'])
         </div>
     </div>
     <hr>
+    <?
+    //Yii::$app->userHelperClass->pre($model);
+    ?>
     <ul class="nav nav-tabs tabs-light-green darken-1" role="tablist">
         <li class="nav-item">
             <a class="nav-link waves-light active" href="/admin/lections/index/">Лекции</a>
