@@ -71,7 +71,7 @@ class LectionsController extends Controller
                     ],
 
                     [
-                        'actions' => ['index', 'slides', 'scenario', 'video'],
+                        'actions' => ['index', 'slides', 'scenario', 'video', 'view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

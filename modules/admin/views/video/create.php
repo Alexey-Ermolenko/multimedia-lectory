@@ -69,8 +69,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
     ]) ?>
     <div class="row wow fadeIn mt-6">
-        <div class="col-md-10">
-            <form enctype="multipart/form-data" action="" method="post" class="card border border-light p-5 float-left">
+        <div class="col-md-12">
+            <form enctype="multipart/form-data" action="" method="post" class="card border border-light p-5 float-center">
                 <input name="_csrf" value="Vx0GLpzM1EfO2xKrB9Z-B9wAMbcs2JC6rCTiL9VbILcbeWJZ_56YIpesSJNzlVMy6W964lWR39fvddFcvG8T0g==" type="hidden">
                 <input name="Video[user_id]" value="<?=Yii::$app->user->identity->getId()?>" type="hidden">
                 <div class="form-row">

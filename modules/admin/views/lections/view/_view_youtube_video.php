@@ -43,47 +43,40 @@ if ($model['LECTION']['file_src'])
         return (match && match[7].length == 11) ? match[7] : false;
     }
 
-    if (video_src) {
-        var isYoutube = video_src && video_src.match(/(?:youtu|youtube)(?:\.com|\.be)\/([\w\W]+)/i);
-        if (isYoutube) {
+    var time_update_interval = 0;
 
-            var time_update_interval = 0;
+    function onYouTubeIframeAPIReady() {
+        window.video = new YT.Player('player', {
 
-            function onYouTubeIframeAPIReady() {
-                window.video = new YT.Player('player', {
-
-                    events: {
-                        'onStateChange': onPlayerStateChange,
-                        'onReady': initialize
-                    }
-                });
+            events: {
+                'onStateChange': onPlayerStateChange,
+                'onReady': initialize
             }
+        });
+    }
 
-            function onPlayerStateChange() {
-                console.log('onPlayerStateChange');
-            }
+    function onPlayerStateChange() {
+        console.log('onPlayerStateChange');
+    }
 
-            function initialize() {
-                updateTimerDisplay();
+    function initialize() {
+        updateTimerDisplay();
 
-                clearInterval(time_update_interval);
-                time_update_interval = setInterval(function () {
-                    updateTimerDisplay();
+        clearInterval(time_update_interval);
+        time_update_interval = setInterval(function () {
+            updateTimerDisplay();
 
-                }, 1000)
-            }
+        }, 1000)
+    }
 
-            function updateTimerDisplay() {
-             //   $('#current-time').text((video.getCurrentTime()));
-             //   $('#duration').text((video.getDuration()));
+    function updateTimerDisplay() {
+        //   $('#current-time').text((video.getCurrentTime()));
+        //   $('#duration').text((video.getDuration()));
 
-                curTime = video.getCurrentTime();
-                durTime = video.getDuration();
+        curTime = video.getCurrentTime();
+        durTime = video.getDuration();
 
-                onTrackedVideoFrame(curTime, durTime);
-            }
-
-        }
+        onTrackedVideoFrame(curTime, durTime);
     }
 
     $(document).ready(function(){
