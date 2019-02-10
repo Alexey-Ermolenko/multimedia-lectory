@@ -1,21 +1,22 @@
 <?
 $this->registerJsFile('/modules/admin/web/js/admin.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
-
 ?>
-
 <div class="container-fluid">
-    <h1>User Info</h1>
     <?
     if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
     {
         ?>
-		<h2>Данный пользователь - Администратор</h2>
-		<a class="btn btn-outline-default waves-effect" href="/admin/page/user-list"> 
+		<h2>Администратор</h2>
+		<a class="btn btn-outline-default waves-effect" href="/admin/page/user-list/">
 			<i class="fa fa-th-list" aria-hidden="true"></i> Список пользователей
 		</a>
+        <a class="btn btn-outline-default waves-effect" href="/admin/page/admin-messages/">
+            <i class="fa fa-th-list" aria-hidden="true"></i> Сообщения
+        </a>
 		<?
-    } else {
+    }
+    else
+    {
 		?>
         <h2>Пользователь</h2>
 		<?

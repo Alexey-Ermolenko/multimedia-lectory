@@ -11,6 +11,27 @@ $this->title = Yii::t('app', 'Create Video');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Videos'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<script>
+    $(document).ready(function () {
+
+        $("#video_src").change(function() {
+
+            var videoSrc = $(this).prop("checked");
+
+            if(videoSrc === false)
+            {
+                $("#youtube_video").show();
+                $("#file_video").hide();
+            }
+            else
+            {
+                $("#youtube_video").hide();
+                $("#file_video").show();
+            }
+        });
+
+    });
+</script>
 <!--Main layout-->
 <div class="container-fluid">
 
@@ -76,8 +97,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             </label>
                         </div>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="col">
                         <div class="switch">
                             <label class="mt-2">
@@ -88,7 +107,30 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                 </div>
+                <hr>
                 <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="switch">
+                            <label class="mt-2">
+                                Видео youtube
+                                <input id="video_src" type="checkbox" checked="checked">
+                                <span class="lever"></span>
+                                Из файла
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <br><br><br>
+                <div class="form-row" id="youtube_video" style="display: none">
+                    <div class="col-md-12">
+                        <div class="md-form form-group">
+                            <input name="Video[video_url]" type="text" class="form-control" id="inputAddressMD" placeholder="Ссылка на видео с youtube">
+                            <label for="inputAddressMD">Видео с youtube</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row" id="file_video">
                     <div class="col-md-12">
                         <div class="file-field">
                             <div class="btn btn-primary btn-sm">
@@ -101,6 +143,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                 </div>
+                <br><br><br>
                 <div class="form-row">
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-success waves-effect waves-light">Create</button>

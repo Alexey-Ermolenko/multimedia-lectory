@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-
 namespace app\modules\admin\controllers;
 
 use app\models\Video;
@@ -19,21 +18,26 @@ use app\models\ScenariosSearch;
 
 use app\models\Demonstrations;
 use app\models\DemonstrationsSearch;
+
+use app\Models\Category;
+
 use yii\helpers\ArrayHelper;
 use yii\data\SqlDataProvider;
 
-use yii\data\Sort;
-
-use yii\data\Pagination;
-use app\models\Country;
-
 use yii\filters\AccessControl;
+use app\components\userHelperClass;
+
 
 /**
  * LectionsController implements the CRUD actions for Lections model.
  */
 class LectionsController extends Controller
 {
+    /**
+     * @param $action
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function beforeAction($action)
     {
         $this->enableCsrfValidation = false;
@@ -87,7 +91,6 @@ class LectionsController extends Controller
      * Lists all Lections models.
      * @return mixed
      */
-
     public function actionIndex()
     {
         /*
@@ -316,7 +319,8 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         }
     }
 
-    public function actionRecNovideo($id, $idscn){
+    public function actionRecNovideo($id, $idscn)
+    {
         $Scenario = Scenarios::find()->where(['id' => $idscn])->one();
         $video = Video::find()->where(['id'=>$this->findModel($id)->video_id])->one();
         $arListDemo = json_decode($Scenario->demo_list_json);
@@ -330,25 +334,177 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         ]);
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @throws \yii\db\Exception
+     */
     public function actionEdit($id)
     {
+        $model = Lections::findOne($id);
+        //ML_TODO: actionNewLection
+        if (Yii::$app->request->isPost)
+        {
 
-        return $this->render('edit', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+            $lection = Yii::$app->request->post('lection');
 
-    public function actionSync($id)
-    {
-        Yii::$app->userHelperClass->pre('actionSync');
-        return $this->render('edit', [
-            'model' => $this->findModel($id),
-        ]);
+            $lection['update_date'] = date("Y-m-d H:i:s");
+            $lection['is_active'] == 'on' ? $lection['is_active'] = '1' : $lection['is_active'] = '0';
+
+
+            if ($_FILES['poster_src']['size'] > 0)
+            {
+                $poster_file = $_FILES['poster_src'];
+                $uploadPosterPath = "repository/user/lections/";
+                if (is_dir($uploadPosterPath))
+                {
+                    //загрузка файла
+                    $filename = basename($poster_file['name']);
+                    $newFileName = 'poster_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
+                    $uploadPosterFile = $uploadPosterPath . $newFileName;
+                    if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile))
+                    {
+                        echo "Файл не был успешно загружен 404<br>";
+                        echo $uploadPosterFile;
+                    }
+
+                }
+                else
+                {
+                    mkdir($uploadPosterPath);
+                    if (is_dir($uploadPosterPath))
+                    {
+                        //загрузка файла
+                        $filename = basename($poster_file['name']);
+                        $newFileName = 'poster_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
+                        $uploadPosterFile = $uploadPosterPath . $newFileName;
+                        if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile))
+                        {
+                            echo "Файл не был успешно загружен 404<br>";
+                            echo $uploadPosterFile;
+                        }
+                    }
+                }
+                unlink($_SERVER['DOCUMENT_ROOT'].$model->poster);
+                $lection['poster'] = "/".$uploadPosterFile;
+            }
+            else
+            {
+                $lection['poster'] = $model->poster;
+            }
+            //Yii::$app->userHelperClass->pre($lection);
+            //die();
+            $model->setAttributes($lection, false);
+            if ($model->validate())
+            {
+                if ($model->save())
+                {
+                    # return $this->goBack('');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                else
+                {
+                    userHelperClass::pre('save error');
+                }
+            }
+            else
+            {
+                userHelperClass::pre('validate error');
+            }
+
+        }
+        else
+        {
+            $user_id = Yii::$app->user->identity->getId();
+
+            //  Список видео доступных данному пользователю
+            //  SELECT * FROM `video` WHERE is_active = 1 AND user_id = 2
+            $userVideoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND user_id =:user_id',
+                [':user_id' => $user_id])->queryScalar();
+
+            $userVideoDataProvider = new SqlDataProvider([
+                'sql' => 'SELECT * FROM  `video` WHERE is_active = 1 AND user_id =:user_id',
+                'params' => [':user_id' => $user_id],
+                'totalCount' => $userVideoCount,
+                'pagination' => [
+                    'pageSize' => 1000,
+                ],
+                'sort' => [
+                    'attributes' => [
+                        'id',
+                        'name',
+                        'autor',
+                        'create_date',
+                        'update_date',
+                    ],
+                ],
+            ]);
+            $searchUserVideo = new VideoSearch();
+
+
+            //  Список видео доступных всем: (или админу если пользователь админ role=20)
+            if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
+            {
+                //  SELECT * FROM  `video` WHERE is_active = 1
+                $allVideoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
+                    [':user_id' => $user_id])->queryScalar();
+                $allVideoDataProvider = new SqlDataProvider([
+                    'sql' => 'SELECT * FROM  `video` WHERE is_active = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
+                    'params' => [':user_id' => $user_id],
+                    'totalCount' => $allVideoCount,
+                    'pagination' => [
+                        'pageSize' => 1000,
+                    ],
+                    'sort' => [
+                        'attributes' => [
+                            'id',
+                            'name',
+                            'autor',
+                            'create_date',
+                            'update_date',
+                        ],
+                    ],
+                ]);
+            }
+            else
+            {
+                //  SELECT * FROM  `video` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id = 2)
+                $allVideoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
+                    [':user_id' => $user_id])->queryScalar();
+                $allVideoDataProvider = new SqlDataProvider([
+                    'sql' => 'SELECT * FROM  `video` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
+                    'params' => [':user_id' => $user_id],
+                    'totalCount' => $allVideoCount,
+                    'pagination' => [
+                        'pageSize' => 1000,
+                    ],
+                    'sort' => [
+                        'attributes' => [
+                            'id',
+                            'name',
+                            'autor',
+                            'create_date',
+                            'update_date',
+                        ],
+                    ],
+                ]);
+            }
+
+            $categoryItems = Category::find()->asArray()->all();
+
+            return $this->render('edit', [
+                'categoryItems' => $categoryItems,
+                'model' => $model,
+                'userVideoDataProvider' => $userVideoDataProvider,
+                'searchUserVideo' => $searchUserVideo,
+                'allVideoDataProvider' => $allVideoDataProvider,
+            ]);
+        }
     }
 
     public function actionExport($id)
     {
-        Yii::$app->userHelperClass->pre('actionExport');
+        userHelperClass::pre('actionExport');
         return $this->render('edit', [
             'model' => $this->findModel($id),
         ]);
@@ -532,12 +688,12 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 }
                 else
                 {
-                    Yii::$app->userHelperClass->pre('save error');
+                    userHelperClass::pre('save error');
                 }
             }
             else
             {
-                Yii::$app->userHelperClass->pre('validate error');
+                userHelperClass::pre('validate error');
             }
 
         }
@@ -547,6 +703,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         }
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionEditSlide($id)
     {
         if (Yii::$app->request->isPost)
@@ -631,12 +792,12 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 }
                 else
                 {
-                    Yii::$app->userHelperClass->pre('save error');
+                    userHelperClass::pre('save error');
                 }
             }
             else
             {
-                Yii::$app->userHelperClass->pre('validate error');
+                userHelperClass::pre('validate error');
             }
 
         }
@@ -661,8 +822,8 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         //ML_TODO: edit scenario
         if (Yii::$app->request->isPost)
         {
-            Yii::$app->userHelperClass->pre('isPost');
-            Yii::$app->userHelperClass->pre(Yii::$app->request->post);
+            userHelperClass::pre('isPost');
+            userHelperClass::pre(Yii::$app->request->post);
         }
         else
         {
@@ -672,7 +833,6 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         }
 
     }
-
 
     /**
      * Creates a new Lections model.
@@ -686,7 +846,6 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         {
             $model = new Lections();
             $lection = Yii::$app->request->post('lection');
-
             $lection['create_date'] = date("Y-m-d H:i:s");
             $lection['update_date'] = date("Y-m-d H:i:s");
             $lection['is_active'] == 'on' ? $lection['is_active'] = '1' : $lection['is_active'] = '0';
@@ -727,6 +886,10 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 }
                 $lection['poster'] = "/".$uploadPosterFile;
             }
+            else
+            {
+                $lection['poster'] = "";
+            }
             //Yii::$app->userHelperClass->pre($lection);
             //die();
             $model->setAttributes($lection, false);
@@ -739,17 +902,19 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 }
                 else
                 {
-                    Yii::$app->userHelperClass->pre('save error');
+                    userHelperClass::pre('save error');
                 }
             }
             else
             {
-                Yii::$app->userHelperClass->pre('validate error');
+                userHelperClass::pre('validate error');
             }
 
         }
         else
         {
+            $categoryItems = Category::find()->asArray()->all();
+
             $user_id = Yii::$app->user->identity->getId();
 
             //  Список видео доступных данному пользователю
@@ -826,32 +991,13 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
             }
 
 
-            return $this->render('create_lection', [
+            return $this->render('new_lection', [
+                'categoryItems' => $categoryItems,
                 'userVideoDataProvider' => $userVideoDataProvider,
                 'searchUserVideo' => $searchUserVideo,
                 'allVideoDataProvider' => $allVideoDataProvider,
             ]);
         }
-        # video_id
-        # $video = new Video();
-        //$video = Video::find()->where(['is_active' => '1', 'is_visible' => '1'])->orderBy('id')->all();
-
-        #Yii::$app->userHelperClass->pre($video);
-
-        //return $this->render('create_lection');
-
-        /*
-        $model = new Lections();
-        //$demo['created_date'] = date("Y-m-d H:i:s");
-        //$demo['update_date'] = date("Y-m-d H:i:s");
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create_lection', [
-                'model' => $model,
-            ]);
-        }
-        */
     }
 
     /**
@@ -878,57 +1024,48 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionDel($id)
     {
-        //ML_TODO: Удаление
-
         $lectionModel = $this->findModel($id);
-
         if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
         {
-            if(stristr($lectionModel->poster, 'repository') == true)
-            {
-                if (unlink(substr($lectionModel->poster, 1)))
-                {
-                    $lectionModel->delete();
-                    return $this->redirect(['lections/index']);
-                }
-                else
-                {
-                    Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
-                }
-            }
+            $this->deleteLection($lectionModel);
         }
         else
         {
             $user_id = Yii::$app->user->identity->getId();
             if ($lectionModel->user_id == $user_id)
             {
-                if(stristr($lectionModel->poster, 'repository') == true)
-                {
-                    if (unlink(substr($lectionModel->poster, 1)))
-                    {
-                        $lectionModel->delete();
-                        return $this->redirect(['lections/index']);
-                    }
-                    else
-                    {
-                        Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
-                    }
-                }
+                $this->deleteLection($lectionModel);
             }
             else
             {
-                Yii::$app->userHelperClass->pre("forbitten");
+                userHelperClass::pre("delete forbitten");
             }
         }
     }
 
+    /**
+     * @param $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionSlideDel($id)
     {
         //ML_TODO: Удаление
-        $demoModel = $this->findDemoModel($id);
+        try
+        {
+            $demoModel = $this->findDemoModel($id);
+        }
+        catch (NotFoundHttpException $e)
+        {
+            userHelperClass::pre($e);
+        }
 
         if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
         {
@@ -941,7 +1078,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 }
                 else
                 {
-                    Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                    userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
                 }
             }
         }
@@ -959,13 +1096,13 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                     }
                     else
                     {
-                        Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                        userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
                     }
                 }
             }
             else
             {
-                Yii::$app->userHelperClass->pre("forbitten");
+                userHelperClass::pre("forbitten");
             }
         }
         die();
@@ -989,6 +1126,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         }
     }
 
+    /**
+     * @param $id
+     * @return null|static
+     * @throws NotFoundHttpException
+     */
     protected function findDemoModel($id)
     {
         if (($model = Demonstrations::findOne($id)) !== null) {
@@ -998,6 +1140,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         }
     }
 
+    /**
+     * @param $id
+     * @return array|null|\yii\db\ActiveRecord
+     * @throws NotFoundHttpException
+     */
     protected function findRelationModel($id)
     {
         /*
@@ -1031,6 +1178,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         }
     }
 
+    /**
+     * @param $id
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws NotFoundHttpException
+     */
     function findDemonstrationsList($id)
     {
         /*
@@ -1063,6 +1215,12 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         }
     }
 
+    /**
+     * @param $id
+     * @return array
+     * @throws NotFoundHttpException
+     * @throws \yii\db\Exception
+     */
     function findCommandsList($id)
     {
         $commands_model = Yii::$app->db->createCommand(
@@ -1076,4 +1234,27 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         }
     }
 
+    /**
+     * @param $lectionModel
+     * @return \yii\web\Response
+     */
+    private function deleteLection($lectionModel)
+    {
+        if(stristr($lectionModel->poster, 'repository') == true)
+        {
+            if (true == userHelperClass::rmRec(substr($lectionModel->poster, 1)))
+            {
+                $connection = Yii::$app->db;
+                $connection->createCommand()->delete('demonstration_time', 'lection_id = '.$lectionModel->id)->execute();
+                $connection->createCommand()->delete('command', 'lection_id = '.$lectionModel->id)->execute();
+
+                $lectionModel->delete();
+                return $this->redirect(['lections/index']);
+            }
+            else
+            {
+                userHelperClass::pre("Ошибка при удалении файла ".substr($lectionModel->poster, 1). ", попробуйте позже");
+            }
+        }
+    }
 }

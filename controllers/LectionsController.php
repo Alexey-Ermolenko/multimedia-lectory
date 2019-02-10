@@ -52,6 +52,7 @@ class LectionsController extends Controller
 
         $searchModel = new LectionsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['is_active'=>1])->orderBy('update_date DESC');
         $dataProvider->setPagination([
             'pageSize' => 10
         ]);
@@ -60,30 +61,30 @@ class LectionsController extends Controller
         // /index?LectionsSearch[created_date]=2018-04
 
         $categories = Yii::$app->db->createCommand('
-            SELECT id, name, (SELECT count(*) FROM lections WHERE category_id = c.id) as count FROM category c HAVING count > 0
+            SELECT id, name, (SELECT count(*) FROM lections WHERE category_id = c.id AND is_active = 1) as count FROM category c HAVING count > 0
         ')->queryAll();
 
 
         $dates = Yii::$app->db->createCommand('
-            SELECT DISTINCT DATE_FORMAT(created_date, \'%Y-%m\') created_date FROM lections
+            SELECT DISTINCT DATE_FORMAT(created_date, \'%Y-%m\') created_date FROM lections WHERE is_active = 1
         ')->queryAll();
 
         $popular_lections = Yii::$app->db->createCommand('
             SELECT id, name, DATE_FORMAT(created_date, \'%d/%m/%Y\') created_date, view_count 
             FROM lections 
+            WHERE is_active = 1
             ORDER BY view_count  DESC 
             LIMIT 5
         ')->queryAll();
 
 
+        //Получение категории из бд
         if(Yii::$app->request->queryParams['LectionsSearch']['category_id'] != null)
         {
             $category = Yii::$app->db->createCommand('
                 SELECT * FROM category WHERE id = '.Yii::$app->request->queryParams['LectionsSearch']['category_id']
             )->queryOne();
-
         }
-
 
         return $this->render('index', [
             'categories' => $categories,

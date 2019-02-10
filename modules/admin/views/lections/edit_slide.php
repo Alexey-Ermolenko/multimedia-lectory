@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use app\models\DemonstrationsSearch;
 use app\models\User;
 use yii\helpers\Url;
+use app\components\userHelperClass;
 
 $this->title = 'Редактирование слайда';
 ?>
@@ -54,9 +55,9 @@ $this->title = 'Редактирование слайда';
                 <div class="card add-slide-form">
                     <div class="md-form col-md-4 m-b-3">
                         <select class="mdb-select" name="demo[type]">
-                            <option value="slide" data-icon="/web/img/slide.jpg" class="rounded-circle">slide</option>
-                            <option value="3D" data-icon="/web/img/3D.jpg" class="rounded-circle">3D</option>
-                            <option value="TEST_TYPE" data-icon="/web/img/TEST_TYPE.jpg" class="rounded-circle">TEST TYPE</option>
+                            <option <?= ($demoModel->type=='slide') ? "selected":"" ?> value="slide" data-icon="/web/img/slide.jpg" class="rounded-circle">slide</option>
+                            <option <?= ($demoModel->type=='3D') ? "selected":"" ?> value="3D" data-icon="/web/img/3D.jpg" class="rounded-circle">3D</option>
+                            <option <?= ($demoModel->type=='TEST_TYPE') ? "selected":"" ?> value="TEST_TYPE" data-icon="/web/img/TEST_TYPE.jpg" class="rounded-circle">TEST TYPE</option>
                         </select>
                         <label>Тип демонстрационного объекта</label>
                     </div>

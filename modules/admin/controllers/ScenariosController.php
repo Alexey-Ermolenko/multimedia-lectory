@@ -25,12 +25,17 @@ use yii\data\Pagination;
 use app\models\Country;
 
 use yii\filters\AccessControl;
-
+use app\components\UserHelperClass;
 /**
  * ScenariosController implements the CRUD actions for Scenarios model.
  */
 class ScenariosController extends Controller
 {
+    /**
+     * @param $action
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function beforeAction($action)
     {
         $this->enableCsrfValidation = false;
@@ -75,6 +80,7 @@ class ScenariosController extends Controller
      * Displays a single Scenarios model.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
@@ -122,9 +128,7 @@ class ScenariosController extends Controller
             $data['update_date'] = date("Y-m-d H:i:s");
             unset($data['demos']);
 
-
             $scenariosModel->setAttributes($data, false);
-
 
             if ($scenariosModel->validate())
             {
@@ -134,12 +138,12 @@ class ScenariosController extends Controller
                 }
                 else
                 {
-                    Yii::$app->userHelperClass->pre('save error');
+                    userHelperClass::pre('save error');
                 }
             }
             else
             {
-                Yii::$app->userHelperClass->pre('validate error');
+                userHelperClass::pre('validate error');
             }
         }
         else
@@ -234,6 +238,7 @@ class ScenariosController extends Controller
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
+     * @throws \yii\db\Exception
      */
     public function actionUpdate($id)
     {
@@ -255,12 +260,12 @@ class ScenariosController extends Controller
                 }
                 else
                 {
-                    Yii::$app->userHelperClass->pre('save error');
+                    userHelperClass::pre('save error');
                 }
             }
             else
             {
-                Yii::$app->userHelperClass->pre('validate error');
+                userHelperClass::pre('validate error');
             }
 
        }
@@ -374,7 +379,7 @@ class ScenariosController extends Controller
             }
             else
             {
-                Yii::$app->userHelperClass->pre("forbitten");
+                userHelperClass::pre("forbitten");
             }
         }
 

@@ -4,6 +4,7 @@ namespace app\modules\admin\controllers;
 
 
 use app\models\UserSearch;
+use app\models\Contact;
 
 use Yii;
 use yii\web\Controller;
@@ -13,6 +14,8 @@ use yii\filters\AccessControl;
 use yii\base\InvalidParamException;
 
 use yii\data\SqlDataProvider;
+
+use app\components\UserHelperClass;
 
 
 /**
@@ -40,7 +43,7 @@ class PageController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup', 'user', 'index', 'user-edit', 'user-list'],
+                'only' => ['logout', 'signup', 'user', 'index', 'user-edit', 'user-list', 'admin-messages', 'message-delete'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -58,7 +61,7 @@ class PageController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['user-list'],
+                        'actions' => ['user-list', 'admin-messages', 'message-delete'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
@@ -75,10 +78,7 @@ class PageController extends Controller
             ],
         ];
     }
-    /**
-     * Renders the index view for the module
-     * @return string
-     */
+
     public function actionIndex()
     {
         return $this->render('index');
@@ -87,9 +87,33 @@ class PageController extends Controller
     public function actionUser()
     {
         return $this->render('user');
-    }    
-	
-	public function actionUserEdit()
+    }
+    public function actionAdminMessages()
+    {
+        $messages =  Contact::find()->orderBy([
+            'created_at'=>SORT_DESC
+        ])->asArray()->all();
+
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
+        {
+            return $this->render('admin-messages', [
+                'messages' => $messages
+            ]);
+        }
+    }
+
+    public function actionMessageDelete($id)
+    {
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
+        {
+            if (Contact::deleteAll(['in', 'id', $id]))
+            {
+                $this->redirect(['page/admin-messages/']);
+            }
+        }
+    }
+
+    public function actionUserEdit()
     {
         if (Yii::$app->request->isPost)
         {
@@ -139,7 +163,7 @@ class PageController extends Controller
                 return $this->goBack('user-edit');
 
             } else {
-                Yii::$app->userHelperClass->pre('error');
+                userHelperClass::pre('error');
             }
 
         } else {
@@ -147,7 +171,8 @@ class PageController extends Controller
         }
     }
 
-    public function actionAdminUserEdit($id) {
+    public function actionAdminUserEdit($id)
+    {
         if (Yii::$app->request->isPost)
         {
             $user = Yii::$app->request->post('user');
@@ -216,14 +241,22 @@ class PageController extends Controller
 
     public function actionAdminUserDel($id = false)
     {
-        //ML_TODO: Удаление
         if (isset($id))
         {
             if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
             {
-                if (User::deleteAll(['in', 'id', $id]))
+                $model = User::findOne($id);
+                $userPath = pathinfo($model->img_src, PATHINFO_DIRNAME);
+                if (true == userHelperClass::rmRec($userPath))
                 {
-                    $this->redirect(['user-list']);
+                    if (User::deleteAll(['in', 'id', $id]))
+                    {
+                        $this->redirect(['user-list']);
+                    }
+                }
+                else
+                {
+                    userHelperClass::pre("Ошибка при удалении файла ".$userPath);
                 }
             }
         }

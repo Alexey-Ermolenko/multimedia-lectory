@@ -23,7 +23,7 @@ $this->beginPage() ?>
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <script type='text/javascript' src='https://mdbootstrap.com/wp-content/themes/mdbootstrap4/js/compiled.min.js?ver=4.5.4'></script>
-
+        <script src="https://www.youtube.com/iframe_api"></script>
                 <!---->
     </head>
     <body>
@@ -141,7 +141,7 @@ $this->beginPage() ?>
                 <!--First column-->
                 <div class="col-md-6">
                     <h5 class="title">Панель администратора</h5>
-                    <p>Тут можно создавать новые и редартировать мультимедиа-лекции</p>
+                    <p>Тут можно создавать и редактировать мультимедиа-лекции</p>
                 </div>
                 <!--/.First column-->
 

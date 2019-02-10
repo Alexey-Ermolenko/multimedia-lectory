@@ -70,8 +70,6 @@ class Contact extends \yii\db\ActiveRecord
             return true;
         }
         return false;*/
-
-
         /*
         Yii::$app->mailer->compose()
             ->setFrom('from@domain.com')
@@ -84,11 +82,10 @@ class Contact extends \yii\db\ActiveRecord
 
         return true;
          */
-
-        #Yii::$app->userHelperClass->pre('777');
-        #    die();
-        // lectorymultimedia@yandex.ru
-        // a.o.ermolenko@gmail.com
+        #   Yii::$app->userHelperClass->pre('777');
+        #   die();
+        //  lectorymultimedia@yandex.ru
+        //  a.o.ermolenko@gmail.com
         /*
         $date = date('Y-m-d H:i:s');
         $to = "a.o.ermolenko@gmail.com, lectorymultimedia@yandex.ru";
@@ -113,9 +110,7 @@ class Contact extends \yii\db\ActiveRecord
         */
 
         $date = date('Y-m-d H:i:s');
-
         \Yii::$app->mailer->getView()->params['userName'] = "username";
-
         $result = \Yii::$app->mailer->compose([
             'html' => $view . '-html',
             'text' => $view . '-text',
@@ -129,4 +124,6 @@ class Contact extends \yii\db\ActiveRecord
 
         return $result;
     }
+
+
 }

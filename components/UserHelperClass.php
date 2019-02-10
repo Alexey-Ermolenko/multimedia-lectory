@@ -5,7 +5,7 @@ namespace app\components;
 class UserHelperClass
 {
     //Yii::$app->userHelperClass->pre('777');
-    public function pre($arr=false)
+    public static function pre($arr=false)
     {
         $debug = debug_backtrace();
         echo "<pre  style='background:#fff; color:#000; border:1px solid #CCC;padding:10px;border-left:4px solid red; font:normal 11px Arial;'><small>".str_replace($_SERVER['DOCUMENT_ROOT'],"",$debug[0]['file'])." : {$debug[0]['line']}</small>\n".print_r($arr,true)."</pre>";
@@ -30,5 +30,25 @@ class UserHelperClass
     public function emptyHtmlText($text)
     {
         return strlen(trim(strip_tags($text))) > 0 ? false:true;
+    }
+
+    public static function rmRec($path)
+    {
+        if (is_file($path))
+        {
+            return unlink($path);
+        }
+        if (is_dir($path))
+        {
+            foreach(scandir($path) as $p)
+            {
+                if (($p!='.') && ($p!='..'))
+                {
+                    self::rmRec($path.DIRECTORY_SEPARATOR.$p);
+                }
+            }
+            return rmdir($path);
+        }
+        return false;
     }
 }

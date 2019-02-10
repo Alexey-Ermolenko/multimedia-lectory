@@ -10,11 +10,17 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\SqlDataProvider;
 
+use app\components\UserHelperClass;
 /**
  * VideoController implements the CRUD actions for Video model.
  */
 class VideoController extends Controller
 {
+    /**
+     * @param $action
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function beforeAction($action)
     {
         $this->enableCsrfValidation = false;
@@ -39,6 +45,7 @@ class VideoController extends Controller
     /**
      * Lists all Video models.
      * @return mixed
+     * @throws \yii\db\Exception
      */
     public function actionIndex()
     {
@@ -127,6 +134,7 @@ class VideoController extends Controller
      * Displays a single Video model.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
@@ -156,7 +164,8 @@ class VideoController extends Controller
             ($video['is_active'] == 'on' ? $video['is_active'] = '1' : $video['is_active'] = '0');
             ($video['is_visible'] == 'on' ? $video['is_visible'] = '1' : $video['is_visible'] = '0');
 
-            if (!empty($_FILES['file_src']))
+
+            if ($_FILES['file_src']['error']!=4)
             {
                 $video_file = $_FILES['file_src'];
 
@@ -169,8 +178,8 @@ class VideoController extends Controller
                     $uploadVideoFile = $uploadVideoPath . $newFileName;
                     if (!move_uploaded_file($video_file['tmp_name'], $uploadVideoFile))
                     {
-                        echo "Файл не был успешно загружен 404<br>";
-                        echo $uploadVideoFile;
+                        UserHelperClass::pre("Файл не был успешно загружен 404");
+                        UserHelperClass::pre($uploadVideoFile);
                     }
 
                 }
@@ -185,12 +194,22 @@ class VideoController extends Controller
                         $uploadVideoFile = $uploadVideoPath . $newFileName;
                         if (!move_uploaded_file($video_file['tmp_name'], $uploadVideoFile))
                         {
-                            echo "Файл не был успешно загружен 404<br>";
-                            echo $uploadVideoFile;
+                            UserHelperClass::pre("Файл не был успешно загружен 404");
+                            UserHelperClass::pre($uploadVideoFile);
                         }
                     }
                 }
                 $video['file_src'] = "/".$uploadVideoFile;
+            }
+            elseif ($_FILES['file_src']['error']==4 or !isset($video['video_url']))
+            {
+                $video['file_src'] = "";
+            }
+
+            if ($video['video_url'])
+            {
+                $video['file_src'] = $video['video_url'];
+                unset($video['video_url']);
             }
 
             $model->setAttributes($video, false);
@@ -203,12 +222,12 @@ class VideoController extends Controller
                 }
                 else
                 {
-                    Yii::$app->userHelperClass->pre('save error');
+                    userHelperClass::pre('save error');
                 }
             }
             else
             {
-                Yii::$app->userHelperClass->pre('validate error');
+                userHelperClass::pre('validate error');
             }
         }
         else
@@ -223,6 +242,7 @@ class VideoController extends Controller
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionUpdate($id)
     {
@@ -292,12 +312,12 @@ class VideoController extends Controller
                 }
                 else
                 {
-                    Yii::$app->userHelperClass->pre('save error');
+                    userHelperClass::pre('save error');
                 }
             }
             else
             {
-                Yii::$app->userHelperClass->pre('validate error');
+                userHelperClass::pre('validate error');
             }
         }
         else
@@ -348,7 +368,7 @@ class VideoController extends Controller
                 }
                 else
                 {
-                    Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                    userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
                 }
             }
         }
@@ -367,13 +387,13 @@ class VideoController extends Controller
                     }
                     else
                     {
-                        Yii::$app->userHelperClass->pre("Произошла ошибка при удалении файла, попробуйте позже");
+                        userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
                     }
                 }
             }
             else
             {
-                Yii::$app->userHelperClass->pre("forbitten");
+                userHelperClass::pre("forbitten");
             }
         }
     }
@@ -387,9 +407,12 @@ class VideoController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Video::findOne($id)) !== null) {
+        if (($model = Video::findOne($id)) !== null)
+        {
             return $model;
-        } else {
+        }
+        else
+        {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }

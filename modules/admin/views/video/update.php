@@ -11,6 +11,27 @@ $this->title = Yii::t('app', 'Update Video');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Videos'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<script>
+    $(document).ready(function () {
+
+        $("#video_src").change(function() {
+
+            var videoSrc = $(this).prop("checked");
+
+            if(videoSrc === false)
+            {
+                $("#youtube_video").show();
+                $("#file_video").hide();
+            }
+            else
+            {
+                $("#youtube_video").hide();
+                $("#file_video").show();
+            }
+        });
+
+    });
+</script>
 <!--Main layout-->
 <div class="container-fluid">
 
@@ -48,9 +69,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'homeLink' => ['label' => 'Главная', 'url' => '/'],
         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
     ]) ?>
-    <div class="row wow fadeIn mt-6">
-        <div class="col-md-10">
-            <form enctype="multipart/form-data" action="" method="post" class="card border border-light p-5 float-left">
+    <div class="row wow fadeIn mt-10">
+        <div class="col-md-12">
+            <form enctype="multipart/form-data" action="" method="post" class="card border border-light p-5 float-center">
                 <input name="_csrf" value="Vx0GLpzM1EfO2xKrB9Z-B9wAMbcs2JC6rCTiL9VbILcbeWJZ_56YIpesSJNzlVMy6W964lWR39fvddFcvG8T0g==" type="hidden">
                 <input name="Video[user_id]" value="<?=Yii::$app->user->identity->getId()?>" type="hidden">
                 <div class="form-row">
@@ -89,7 +110,39 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                 </div>
+                <hr>
+                <?
+                    if( strpos($model->file_src, 'youtube') === false )
+                    {
+                        $is_youtube_video = false;
+                    }
+                    else
+                    {
+                        $is_youtube_video = true;
+                    }
+                ?>
                 <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="switch">
+                            <label class="mt-2">
+                                Видео youtube
+                                <input id="video_src" type="checkbox" <?=$is_youtube_video==false ? 'checked="checked"':'' ?>>
+                                <span class="lever"></span>
+                                Из файла
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <br><br><br>
+                <div class="form-row" id="youtube_video" style="display: <?=$is_youtube_video==false ? 'none':'block'?>">
+                    <div class="col-md-12">
+                        <div class="md-form form-group">
+                            <input name="Video[video_url]" type="text" value="" class="form-control" id="inputAddressMD" placeholder="Ссылка на видео с youtube">
+                            <label for="inputAddressMD">Видео с youtube</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row" id="file_video" style="display: <?=$is_youtube_video==false ? 'block':'none'?>">
                     <div class="col-md-12">
                         <div class="file-field">
                             <div class="btn btn-primary btn-sm">
@@ -97,11 +150,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <input name="file_src" value="" type="file">
                             </div>
                             <div class="file-path-wrapper">
-                                <input class="file-path validate" value="<?=$model->file_src ?>" type="text" placeholder="Видео файл">
+                                <input class="file-path validate" value="" type="text" placeholder="Видео файл">
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="form-row">
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-success waves-effect waves-light">Update</button>

@@ -50,12 +50,19 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     public function scenarios()
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
+    /**
+     * @param $username
+     * @return bool
+     */
     public static function isUserAdmin($username)
     {
         if (static::findOne(['username' => $username, 'role' => self::ROLE_ADMIN]))
@@ -66,6 +73,10 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
+    /**
+     * @param $params
+     * @return SqlDataProvider
+     */
     public function search($params)
     {
         $query = User::find();
@@ -87,21 +98,39 @@ class User extends ActiveRecord implements IdentityInterface
         return $dataProvider;
     }
 
+    /**
+     * @param int|string $id
+     * @return null|IdentityInterface|static
+     */
     public static function findIdentity($id)
     {
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
+    /**
+     * @param $token
+     * @param null $type
+     * @return void|IdentityInterface
+     * @throws NotSupportedException
+     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
 
+    /**
+     * @param $username
+     * @return null|static
+     */
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
+    /**
+     * @param $token
+     * @return null|static
+     */
     public static function findByPasswordResetToken($token)
     {
 
@@ -115,6 +144,10 @@ class User extends ActiveRecord implements IdentityInterface
         ]);
     }
 
+    /**
+     * @param $token
+     * @return bool
+     */
     public static function isPasswordResetTokenValid($token)
     {
 
@@ -127,6 +160,9 @@ class User extends ActiveRecord implements IdentityInterface
         return $timestamp + $expire >= time();
     }
 
+    /**
+     * @return int|mixed|string
+     */
     public function getId()
     {
         return $this->getPrimaryKey();
@@ -147,16 +183,26 @@ class User extends ActiveRecord implements IdentityInterface
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
+    /**
+     * @param $password
+     * @throws \yii\base\Exception
+     */
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
+    /**
+     * @throws \yii\base\Exception
+     */
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
+    /**
+     * @throws \yii\base\Exception
+     */
     public function generatePasswordResetToken()
     {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();

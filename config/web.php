@@ -44,7 +44,7 @@ $config = [
                 /*'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.yandex.com',
                 'username' => 'lectorymultimedia@yandex.ru',
-                'password' => '0000000000',
+                'password' => '4tge453rw4',
                 'encryption' => 'ssl',
                 'port' => '465',*/
                 'class' => 'Swift_SmtpTransport',
@@ -58,7 +58,7 @@ $config = [
                     ],
                 ],
                 'username' => 'lectorymultimedia@gmail.com',
-                'password' => '0000000',
+                'password' => 'uhouszycfczfoahm',
             ],
             'messageConfig' => [
                 'charset' => 'UTF-8',

@@ -37,7 +37,7 @@ class UserSearch extends User
 
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()->where(['role' => \app\models\User::ROLE_USER]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

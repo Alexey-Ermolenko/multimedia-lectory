@@ -157,7 +157,7 @@ class SiteController extends Controller
     {
         //ML_TODO: actionAbout
         $model = new Contact();
-        if ($model->load(Yii::$app->request->post()) && $model->save() && $model->sendEmail('contactMail', 'Соббщение из формы', ['params' => 'Ёбаный пиздец']))
+        if ($model->load(Yii::$app->request->post()) && $model->save() && $model->sendEmail('contactMail', 'Сообщение из формы', ['params' => 'Ёбаный пиздец']))
         {
 
             Yii::$app->session->setFlash('aboutFormSubmitted');

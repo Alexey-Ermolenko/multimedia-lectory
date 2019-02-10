@@ -17,17 +17,21 @@ $this->params['breadcrumbs'][] = 'Новая лекция';
 <script>
     // ML_TODO: видео в модальном окне
     $(document).ready(function () {
+        $('.mdb-select').material_select();
+
         $("[data-modal_video_btn]").click(function () {
             $('#modalYT').attr('data-video_src', $(this).attr('data-video_src'));
         });
 
         //код для вставки с youtube.com
         videos = document.querySelectorAll('video');
-        for (var i = 0, l = videos.length; i < l; i++) {
+        for (var i = 0, l = videos.length; i < l; i++)
+        {
             var video = videos[i];
             var src = video.src || (function () {
                 var sources = video.querySelectorAll('source');
-                for (var j = 0, sl = sources.length; j < sl; j++) {
+                for (var j = 0, sl = sources.length; j < sl; j++)
+                {
                     var source = sources[j];
                     var type = source.type;
                     var isMp4 = type.indexOf('mp4') != -1;
@@ -94,6 +98,31 @@ $this->params['breadcrumbs'][] = 'Новая лекция';
         <div class="col-md-12">
             <form action="" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="lection[user_id]" value="<?= Yii::$app->user->identity->getId() ?>">
+                <?
+                if (!empty($categoryItems))
+                {
+                    ?>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <div class="md-form">
+                                <select name="lection[category_id]" class="mdb-select md-form" searchable="Search here..">
+                                    <option value="" disabled selected>Выбери категорию</option>
+                                    <?
+                                    foreach ($categoryItems as $arItems)
+                                    {
+                                        ?>
+                                        <option value="<?=$arItems['id']?>"><?=$arItems['name']?></option>
+                                        <?
+                                    }
+                                    ?>
+                                </select>
+                                <label>Категория лекции</label>
+                            </div>
+                        </div>
+                    </div>
+                    <?
+                }
+                ?>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="inputEmail4">Название лекции</label>
@@ -106,18 +135,20 @@ $this->params['breadcrumbs'][] = 'Новая лекция';
                                placeholder="Автор лекции">
                     </div>
                 </div>
-                <div class="form-group col-md-12">
-                    <div class="md-form">
-                        <textarea name="lection[description]" type="text" id="text2" placeholder="Описание лекции"
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <div class="md-form">
+                            <textarea name="lection[description]" type="text" id="text2" placeholder="Описание лекции"
                                   class="md-textarea md-textarea-auto form-control" rows="2"></textarea>
-                        <label for="text2">Описание лекции</label>
+                            <label for="text2">Описание лекции</label>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group col-md-12">
-                    <div class="md-form">
-                        <textarea name="lection[content]" type="text" id="text4" placeholder="Содержимое лекции"
-                                  class="md-textarea md-textarea-auto form-control" rows="2"></textarea>
-                        <label for="text4">Содержимое лекции</label>
+                    <div class="form-group col-md-6">
+                        <div class="md-form">
+                            <textarea name="lection[content]" type="text" id="text4" placeholder="Содержимое лекции"
+                                      class="md-textarea md-textarea-auto form-control" rows="2"></textarea>
+                            <label for="text4">Содержимое лекции</label>
+                        </div>
                     </div>
                 </div>
                 <div class="form-row">
@@ -154,7 +185,7 @@ $this->params['breadcrumbs'][] = 'Новая лекция';
                             <label class="mt-3">
                                 Выкл.
                                 <input name="lection[is_active]"
-                                       type="checkbox" <?= (($demoModel->is_active == '1') ? "checked" : "") ?>>
+                                       type="checkbox">
                                 <span class="lever"></span>
                                 Вкл.
                             </label>
@@ -261,11 +292,6 @@ $this->params['breadcrumbs'][] = 'Новая лекция';
         <!-- Grid column -->
     </div>
     <br>
-    <?
-
-    Yii::$app->userHelperClass->pre('video');
-    ?>
-
 </div>
 <!--/.Main layout-->
 <!--Modal: modalYT-->

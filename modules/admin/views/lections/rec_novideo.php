@@ -44,17 +44,13 @@ $(document).ready(function() {
     </ul>
     <br><br>
 
-    <?
-    Yii::$app->userHelperClass->pre('rec video');
-    Yii::$app->userHelperClass->pre(ArrayHelper::toArray($lectionModel));
-    Yii::$app->userHelperClass->pre(ArrayHelper::toArray($arDemos));
-    ?>
+
     <hr>
 
     <div class="demo-list-view">
         <div class="card">
             <div class="card-body">
-
+                <p>Данный функционал в разработке. =(</p>
             </div>
         </div>
     </div>
