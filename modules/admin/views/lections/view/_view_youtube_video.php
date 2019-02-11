@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use app\models\LectionsSearch;
 use app\models\User;
 use yii\helpers\Url;
-use app\components\YouTubeVideo;
+use app\components\YVideo;
 
 $this->title = 'Мультимедиа-лекторий | '. $model['LECTION']['lection_name'];
 $this->registerMetaTag(['name' => 'keywords', 'content' => $model['LECTION']['keywords']]);
@@ -25,7 +25,7 @@ if ($model['LECTION']['file_src'])
     // Видео из youtube
     ob_start();
 
-    YoutubeVideo::insertHTMLVideo($model['LECTION']['file_src'], '100%', '390');
+    YVideo::insertHTMLVideo($model['LECTION']['file_src'], '100%', '390');
     $videoHtml = ob_get_contents();
 
     ob_end_clean();

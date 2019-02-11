@@ -3,7 +3,7 @@
 namespace app\components;
 
 
-class YouTubeVideo
+class YVideo
 {
     /**
      * @param $url
@@ -48,7 +48,7 @@ class YouTubeVideo
      */
     public static function getSmallPreviewByLink($url)
 	{
-		$yCode = YouTubeVideo::getYoutubeCodeFromURL($url);
+		$yCode = self::getYoutubeCodeFromURL($url);
 		if($yCode!==false)return "http://i2.ytimg.com/vi/".$yCode."/default.jpg";//120x90
 		else return false;
 	}
@@ -61,7 +61,7 @@ class YouTubeVideo
      */
     public static function insertHTMLVideo($url, $width=480, $height=390)
 	{
-		$yCode = YouTubeVideo::getYoutubeCodeFromURL($url);
+		$yCode = self::getYoutubeCodeFromURL($url);
 		if($yCode!==false)
 		{
 			?>
@@ -86,7 +86,7 @@ class YouTubeVideo
      */
     public static function getViewsCount($url)
 	{
-		$yCode = YouTubeVideo::getYoutubeCodeFromURL($url);
+		$yCode = self::getYoutubeCodeFromURL($url);
 		if($yCode!==false)
 		{
 			$apiUrl = "http://gdata.youtube.com/feeds/api/videos/".$yCode;

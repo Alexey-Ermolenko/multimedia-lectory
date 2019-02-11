@@ -15,14 +15,14 @@ if ($model['LECTION']['file_src'])
     if ((stristr($model['LECTION']['file_src'], 'youtu') === FALSE) && (stristr($model['LECTION']['file_src'], 'youtube') === FALSE))
     {
         // Видео из репозитория лектория
-        echo $this->render('view\_view_repository_video.php', [
+        echo $this->render('view/_view_repository_video.php', [
             'model' => $model,
         ]);
     }
     else
     {
         // Видео из youtube
-        echo $this->render('view\_view_youtube_video.php', [
+        echo $this->render('view/_view_youtube_video.php', [
             'model' => $model,
         ]);
     }

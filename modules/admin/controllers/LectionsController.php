@@ -490,10 +490,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 ]);
             }
 
-            $categoryItems = Category::find()->asArray()->all();
-
             return $this->render('edit', [
-                'categoryItems' => $categoryItems,
                 'model' => $model,
                 'userVideoDataProvider' => $userVideoDataProvider,
                 'searchUserVideo' => $searchUserVideo,

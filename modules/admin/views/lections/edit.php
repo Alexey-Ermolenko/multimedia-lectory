@@ -6,6 +6,7 @@ use app\models\User;
 use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 
+use app\models\Category;
 use app\components\userHelperClass;
 
 $this->title = 'Лекция №'.$model->id.' | редактирование';
@@ -14,7 +15,7 @@ $this->title = 'Лекция №'.$model->id.' | редактирование';
 $this->params['breadcrumbs'][] = ['template' => "<li>{link}</li>\n", 'label' => 'Лекции', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->name;
 
-
+$categoryItems = Category::find()->asArray()->all();
 ?>
 <script>
     // ML_TODO: видео в модальном окне

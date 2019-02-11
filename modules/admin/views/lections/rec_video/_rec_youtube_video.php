@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use yii\helpers\ArrayHelper;
-use app\components\YouTubeVideo;
+use app\components\YVideo;
 
 use app\components\UserHelperClass;
 
@@ -39,7 +39,7 @@ if ($video['file_src'])
     // Видео из youtube
     ob_start();
 
-    YoutubeVideo::insertHTMLVideo($video['file_src'], '100%', '390');
+    YVideo::insertHTMLVideo($video['file_src'], '100%', '390');
     $videoHtml = ob_get_contents();
 
     ob_end_clean();

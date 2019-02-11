@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use app\models\LectionsSearch;
 use app\models\User;
 use yii\helpers\Url;
-use app\components\YouTubeVideo;
+use app\components\YVideo;
 use app\components\userHelperClass;
 
 $this->title = 'Мультимедиа-лекторий | '. $model['lection_name'];
@@ -44,13 +44,12 @@ $json = json_encode($arLection, JSON_UNESCAPED_UNICODE);
 
 if ($model['file_src'])
 {
-
     $video_src = $model['file_src'];
     // Видео из youtube
     ob_start();
-    YouTubeVideo::insertHTMLVideo($model['file_src'], '100%', '390');
-    $videoHtml = ob_get_contents();
 
+    YVideo::insertHTMLVideo($model['file_src'], '100%', '390');
+    $videoHtml = ob_get_contents();
     ob_end_clean();
 }
 ?>
