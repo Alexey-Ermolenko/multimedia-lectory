@@ -25,42 +25,50 @@ $this->params['breadcrumbs'][] = $model->name;
             $('#modalYT').attr('data-video_src', $(this).attr('data-video_src'));
         });
 
-        //код для вставки с youtube.com
-        videos = document.querySelectorAll('video');
-        for (var i = 0, l = videos.length; i < l; i++) {
-            var video = videos[i];
-            var src = video.src || (function () {
-                var sources = video.querySelectorAll('source');
-                for (var j = 0, sl = sources.length; j < sl; j++) {
-                    var source = sources[j];
-                    var type = source.type;
-                    var isMp4 = type.indexOf('mp4') != -1;
-                    if (isMp4) return source.src;
-                }
-                return null;
-            })();
-            if (src) {
-                var isYoutube = src && src.match(/(?:youtu|youtube)(?:\.com|\.be)\/([\w\W]+)/i);
-                if (isYoutube) {
-                    var id = isYoutube[1].match(/watch\?v=|[\w\W]+/gi);
-                    id = (id.length > 1) ? id.splice(1) : id;
-                    id = id.toString();
-                    // var mp4url = 'http://www.convertinmp4.com/redirect.php?video=';
-                    // video.src = mp4url + id + '&v=HRC4QzvlgyVC3cPGffGnpal3cm7dTUcJ&hd=1';
-                    video.src = 'http://www.convertinmp4.com/<?=$JSscript_str?>';
-                }
-            }
-        }
+
 
         $("#modalYT").on('show.bs.modal', function () {
-            $("#video").remove();
-            $("<video id='video' class='video' controls='controls' poster='' preload='none' style='width: 100%;'></video>").appendTo($("#video_container"));
-            $("[data-video_source]").remove();
-            $("<source data-video_source src='" + $(this).attr('data-video_src') + "' class='item' type='video/mp4'></source>").appendTo($(".video"));
+            var src = $(this).attr('data-video_src');
+            if (src)
+            {
+                var isYoutube = src && src.match(/(?:youtu|youtube)(?:\.com|\.be)\/([\w\W]+)/i);
+                if (isYoutube)
+                {
+                    var videoCode = youtube_parser(src);
+
+                    $youtubeFrame = '<iframe ' +
+                        'id="player" title="YouTube video player" width="100%" height="400px"' +
+                        'src="http://www.youtube.com/embed/'+ videoCode +
+                        '?controls=2&modestbranding=1&rel=0&autohide=1&wmode=transparent&rel=0&enablejsapi=1&origin=*"' +
+                        'frameborder="0" allowfullscreen>' +
+                        '</iframe>';
+
+                    $("#video").remove();
+                    $("#player").remove();
+                    $("#video_container").append($youtubeFrame);
+                }
+                else
+                {
+                    $("#video").remove();
+                    $("#player").remove();
+                    $("<video id='video' class='video' controls='controls' poster='' preload='none' style='width: 100%;'></video>").appendTo($("#video_container"));
+                    $("[data-video_source]").remove();
+                    $("<source data-video_source src='" + $(this).attr('data-video_src') + "' class='item' type='video/mp4'></source>").appendTo($(".video"));
+                }
+            }
         });
+
         $("#modalYT").on('hidden.bs.modal', function () {
             $('video').trigger('pause');
+            $("#player").remove();
         });
+
+        function youtube_parser(url)
+        {
+            var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+            var match = url.match(regExp);
+            return (match&&match[7].length==11)? match[7] : false;
+        }
     });
 </script>
 <!--Main layout-->

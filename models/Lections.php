@@ -52,7 +52,7 @@ class Lections extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'description', 'keywords', 'content', 'task_group', 'autor', 'is_active','poster'], 'required'],
+            [['name', 'is_active'], 'required'],
             [['description', 'keywords', 'content', 'task_group', 'autor'], 'string'],
             [['is_active', 'user_id', 'video_id', 'category_id'], 'integer'],
             [['created_date', 'update_date'], 'safe'],

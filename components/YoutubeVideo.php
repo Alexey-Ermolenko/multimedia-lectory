@@ -1,4 +1,5 @@
-<?
+<?php
+
 namespace app\components;
 
 
@@ -97,4 +98,3 @@ class YouTubeVideo
 	}
 	
 }
-?>

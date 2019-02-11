@@ -48,8 +48,7 @@ if ($model['file_src'])
     $video_src = $model['file_src'];
     // Видео из youtube
     ob_start();
-
-    YoutubeVideo::insertHTMLVideo($model['file_src'], '100%', '390');
+    YouTubeVideo::insertHTMLVideo($model['file_src'], '100%', '390');
     $videoHtml = ob_get_contents();
 
     ob_end_clean();
