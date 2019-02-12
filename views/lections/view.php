@@ -20,11 +20,13 @@ $arLection = [
 
 if ($model['file_src'])
 {
+    /** @var TYPE_NAME $video_src */
     $video_src = $model['file_src'];
 
     if ((stristr($model['file_src'], 'youtu') === FALSE) && (stristr($model['file_src'], 'youtube') === FALSE))
     {
         // Видео из репозитория лектория
+        /** @var TYPE_NAME $demonstrations_model */
         echo $this->render('view/_view_repository_video.php', [
             'demonstrations_model' => $demonstrations_model,
             'model' => $model,
@@ -33,6 +35,7 @@ if ($model['file_src'])
     else
     {
         // Видео из youtube
+        /** @var TYPE_NAME $demonstrations_model */
         echo $this->render('view/_view_youtube_video.php', [
             'demonstrations_model' => $demonstrations_model,
             'model' => $model,
