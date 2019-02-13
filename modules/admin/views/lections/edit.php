@@ -120,7 +120,7 @@ $categoryItems = Category::find()->asArray()->all();
                         <div class="form-group col-md-12">
                             <div class="md-form">
                                 <select name="lection[category_id]" class="mdb-select md-form" searchable="Search here..">
-                                    <option value="" disabled>Выбери категорию</option>
+                                    <option value="0" disabled>Выбери категорию</option>
                                     <?
                                     foreach ($categoryItems as $arItems)
                                     {
