@@ -43,6 +43,7 @@ class LectionsController extends Controller
         $this->enableCsrfValidation = false;
         return parent::beforeAction($action);
     }
+
     /**
      * @inheritdoc
      */
@@ -120,8 +121,7 @@ class LectionsController extends Controller
         $user_id = Yii::$app->user->identity->getId();
         $searchModel = new LectionsSearch();
 
-        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
-        {
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN) {
             /*
             SELECT
                 l.id,
@@ -180,9 +180,7 @@ class LectionsController extends Controller
             ]);
 
             $allLectionDataProvider = null;
-        }
-        else
-        {
+        } else {
             $userLectionCount = Yii::$app->db->createCommand('SELECT count(*) FROM  lections l WHERE l.user_id =:user_id',
                 [':user_id' => $user_id])->queryScalar();
             $userLectionDataProvider = new SqlDataProvider([
@@ -230,20 +228,18 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         ]);
     }
 
-    public function actionRec($id){
+    public function actionRec($id)
+    {
         //ML_TODO: actionRec ajax request 
 
-        if (Yii::$app->request->isAjax)
-        {
+        if (Yii::$app->request->isAjax) {
             $data = Yii::$app->request->queryParams;
             $Scenario = Scenarios::find()->where(['id' => $data['id']])->one();
             $arListDemo = json_decode($Scenario->demo_list_json);
             $demos = Demonstrations::find()->where(['in', 'id', $arListDemo])->all();
             echo json_encode(ArrayHelper::toArray($demos), JSON_UNESCAPED_UNICODE);
             exit();
-        }
-        else
-        {
+        } else {
             $user_id = Yii::$app->user->id;
             $_GET['ScenariosSearch']['user_id'] = $user_id;
 
@@ -258,19 +254,33 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         }
     }
 
-    public function actionRecVideo($id, $idscn){
-        if (Yii::$app->request->isAjax)
-        {
+    /**
+     * Finds the Lections model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Lections the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Lections::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    public function actionRecVideo($id, $idscn)
+    {
+        if (Yii::$app->request->isAjax) {
             //ML_TODO: обработка ошибок записи в бд
             $dbConn = Yii::$app->db;
-            $dbConn->createCommand()->delete('demonstration_time', 'lection_id = '.$id)->execute();
-            $dbConn->createCommand()->delete('command', 'lection_id = '.$id)->execute();
+            $dbConn->createCommand()->delete('demonstration_time', 'lection_id = ' . $id)->execute();
+            $dbConn->createCommand()->delete('command', 'lection_id = ' . $id)->execute();
 
             $demoList = json_decode(Yii::$app->request->post('jsonDemosList'), JSON_UNESCAPED_UNICODE);
-            if(!empty($demoList))
-            {
-                foreach ($demoList as $n => $demoItem)
-                {
+            if (!empty($demoList)) {
+                foreach ($demoList as $n => $demoItem) {
                     $dbConn->createCommand()->insert(
                         'demonstration_time',
                         [
@@ -282,10 +292,8 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 }
             }
             $commandList = json_decode(Yii::$app->request->post('jsonComandList'), JSON_UNESCAPED_UNICODE);
-            if(!empty($commandList))
-            {
-                foreach ($commandList as $commandItem)
-                {
+            if (!empty($commandList)) {
+                foreach ($commandList as $commandItem) {
                     $commandString = json_encode($commandItem, JSON_UNESCAPED_UNICODE);
                     $dbConn->createCommand()->insert(
                         'command',
@@ -302,17 +310,15 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
             $msg = ['result' => 'ok'];
             echo json_encode($msg, JSON_UNESCAPED_UNICODE);
             exit();
-        }
-        else
-        {
+        } else {
             $Scenario = Scenarios::find()->where(['id' => $idscn])->one();
-            $video = Video::find()->where(['id'=>$this->findModel($id)->video_id])->one();
+            $video = Video::find()->where(['id' => $this->findModel($id)->video_id])->one();
             $arListDemo = json_decode($Scenario->demo_list_json);
             $arDemos = Demonstrations::find()->where(['in', 'id', $arListDemo])->all();
             return $this->render('rec_video', [
-                'id'=>$id,
-                'idscn'=>$idscn,
-                'arDemos'=>$arDemos,
+                'id' => $id,
+                'idscn' => $idscn,
+                'arDemos' => $arDemos,
                 'lectionModel' => $this->findModel($id),
                 'video' => $video
             ]);
@@ -322,13 +328,13 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
     public function actionRecNovideo($id, $idscn)
     {
         $Scenario = Scenarios::find()->where(['id' => $idscn])->one();
-        $video = Video::find()->where(['id'=>$this->findModel($id)->video_id])->one();
+        $video = Video::find()->where(['id' => $this->findModel($id)->video_id])->one();
         $arListDemo = json_decode($Scenario->demo_list_json);
         $arDemos = Demonstrations::find()->where(['in', 'id', $arListDemo])->all();
         return $this->render('rec_video', [
-            'id'=>$id,
-            'idscn'=>$idscn,
-            'arDemos'=>$arDemos,
+            'id' => $id,
+            'idscn' => $idscn,
+            'arDemos' => $arDemos,
             'lectionModel' => $this->findModel($id),
             'video' => $video
         ]);
@@ -343,8 +349,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
     {
         $model = Lections::findOne($id);
         //ML_TODO: actionNewLection
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
 
             $lection = Yii::$app->request->post('lection');
 
@@ -352,69 +357,52 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
             $lection['is_active'] == 'on' ? $lection['is_active'] = '1' : $lection['is_active'] = '0';
 
 
-            if ($_FILES['poster_src']['size'] > 0)
-            {
+            if ($_FILES['poster_src']['size'] > 0) {
                 $poster_file = $_FILES['poster_src'];
                 $uploadPosterPath = "repository/user/lections/";
-                if (is_dir($uploadPosterPath))
-                {
+                if (is_dir($uploadPosterPath)) {
                     //загрузка файла
                     $filename = basename($poster_file['name']);
                     $newFileName = 'poster_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
                     $uploadPosterFile = $uploadPosterPath . $newFileName;
-                    if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile))
-                    {
+                    if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile)) {
                         echo "Файл не был успешно загружен 404<br>";
                         echo $uploadPosterFile;
                     }
 
-                }
-                else
-                {
+                } else {
                     mkdir($uploadPosterPath);
-                    if (is_dir($uploadPosterPath))
-                    {
+                    if (is_dir($uploadPosterPath)) {
                         //загрузка файла
                         $filename = basename($poster_file['name']);
                         $newFileName = 'poster_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
                         $uploadPosterFile = $uploadPosterPath . $newFileName;
-                        if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile))
-                        {
+                        if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile)) {
                             echo "Файл не был успешно загружен 404<br>";
                             echo $uploadPosterFile;
                         }
                     }
                 }
-                unlink($_SERVER['DOCUMENT_ROOT'].$model->poster);
-                $lection['poster'] = "/".$uploadPosterFile;
-            }
-            else
-            {
+                unlink($_SERVER['DOCUMENT_ROOT'] . $model->poster);
+                $lection['poster'] = "/" . $uploadPosterFile;
+            } else {
                 $lection['poster'] = $model->poster;
             }
             //Yii::$app->userHelperClass->pre($lection);
             //die();
             $model->setAttributes($lection, false);
-            if ($model->validate())
-            {
-                if ($model->save())
-                {
+            if ($model->validate()) {
+                if ($model->save()) {
                     # return $this->goBack('');
                     return $this->redirect(['view', 'id' => $model->id]);
-                }
-                else
-                {
+                } else {
                     userHelperClass::pre('save error');
                 }
-            }
-            else
-            {
+            } else {
                 userHelperClass::pre('validate error');
             }
 
-        }
-        else
-        {
+        } else {
             $user_id = Yii::$app->user->identity->getId();
 
             //  Список видео доступных данному пользователю
@@ -443,8 +431,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
 
 
             //  Список видео доступных всем: (или админу если пользователь админ role=20)
-            if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
-            {
+            if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN) {
                 //  SELECT * FROM  `video` WHERE is_active = 1
                 $allVideoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
                     [':user_id' => $user_id])->queryScalar();
@@ -465,9 +452,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                         ],
                     ],
                 ]);
-            }
-            else
-            {
+            } else {
                 //  SELECT * FROM  `video` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id = 2)
                 $allVideoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
                     [':user_id' => $user_id])->queryScalar();
@@ -522,14 +507,104 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         ]);
     }
 
+    /**
+     * @param $id
+     * @return array|null|\yii\db\ActiveRecord
+     * @throws NotFoundHttpException
+     */
+    protected function findRelationModel($id)
+    {
+        /*
+        SELECT
+            l.id, l.name, l.poster, v.name, v.file_src
+        FROM
+            lections AS l
+        LEFT JOIN
+            video AS v
+        ON
+            v.lection_id=l.id
+        WHERE
+            l.id=1
+        */
+        $model = Lections::find()
+            ->select('* ,video.autor AS video_autor ,lections.autor AS lection_autor ,lections.id AS lection_id, video.id AS video_id, lections.name AS lection_name, video.name AS video_name')
+            ->from('lections')
+            ->leftjoin('video', 'video.id = lections.video_id')
+            ->andWhere('lections.id = ' . $id)
+            ->asArray()
+            ->one();
+
+
+        if (($model) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    /**
+     * @param $id
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws NotFoundHttpException
+     */
+    function findDemonstrationsList($id)
+    {
+        /*
+        SELECT
+            demonstration_time.id, demonstration_time.lection_id AS lection_id, demonstration.autor,
+            demonstration.name, demonstration.icon_src, demonstration.src, demonstration_time.time
+        FROM
+            demonstration
+        LEFT JOIN
+            demonstration_time ON demonstration_time.demonstration_id = demonstration.id
+        WHERE
+            demonstration_time.lection_id =1
+        ORDER BY
+            `demonstration_time`.`time` +0 ASC
+        */
+        $demonstrations_model = Lections::find()
+            ->select('demonstration_time.id, demonstration_time.lection_id AS lection_id, demonstration.autor, demonstration.name, demonstration.type, demonstration.icon_src, demonstration.src, demonstration_time.time')
+            ->from('demonstration')
+            ->leftJoin('demonstration_time', 'demonstration_time.demonstration_id = demonstration.id')
+            ->andWhere('demonstration_time.lection_id = ' . $id)
+            ->addOrderBy(['`demonstration_time`.`time`' . '+0' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+
+        if (($demonstrations_model) !== null) {
+            return $demonstrations_model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    /**
+     * @param $id
+     * @return array
+     * @throws NotFoundHttpException
+     * @throws \yii\db\Exception
+     */
+    function findCommandsList($id)
+    {
+        $commands_model = Yii::$app->db->createCommand(
+            'SELECT * FROM command WHERE lection_id = ' . $id . ' ORDER BY time ASC'
+        )->queryAll();
+
+        if (($commands_model) !== null) {
+            return $commands_model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
     public function actionSlides()
     {
         $user_id = Yii::$app->user->identity->getId();
 
         $searchUserDemo = new DemonstrationsSearch();
         // if user = ADMIN then view all demo fore edit, alse user and all demo
-        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
-        {
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN) {
             //SELECT * FROM  `demonstration` WHERE is_active = 1
             $userDemoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `demonstration`',
                 [':user_id' => $user_id])->queryScalar();
@@ -550,9 +625,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 ],
             ]);
             $allDemosDataProvider = null;
-        }
-        else
-        {
+        } else {
             $userDemoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `demonstration` WHERE is_active = 1 AND user_id =:user_id',
                 [':user_id' => $user_id])->queryScalar();
 
@@ -604,98 +677,81 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
 
     public function actionNewSlide()
     {
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             $demo = Yii::$app->request->post('demo');
             $model = new Demonstrations();
-             $demo['create_date'] = date("Y-m-d H:i:s");
-             $demo['update_date'] = date("Y-m-d H:i:s");
+            $demo['create_date'] = date("Y-m-d H:i:s");
+            $demo['update_date'] = date("Y-m-d H:i:s");
             ($demo['is_active'] == 'on' ? $demo['is_active'] = '1' : $demo['is_active'] = '0');
             ($demo['is_visible'] == 'on' ? $demo['is_visible'] = '1' : $demo['is_visible'] = '0');
 
-            if (!empty($_FILES['icon_src']['tmp_name']))
-            {
-                $uploadIconsPath = "repository/user/demonstrations/".$demo['type']."/icons/";
-                if (is_dir($uploadIconsPath))
-                {
+            if (!empty($_FILES['icon_src']['tmp_name'])) {
+                $uploadIconsPath = "repository/user/demonstrations/" . $demo['type'] . "/icons/";
+                if (is_dir($uploadIconsPath)) {
                     //загрузка файла
-                    $filename=basename($_FILES['icon_src']['name']);
-                    $newFileNameIcon='icon_'.time().substr($filename, strpos($filename,'.'), strlen($filename)-1);
+                    $filename = basename($_FILES['icon_src']['name']);
+                    $newFileNameIcon = 'icon_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
 
                     $uploadIconFile = $uploadIconsPath . $newFileNameIcon;
-                    if (!move_uploaded_file($_FILES['icon_src']['tmp_name'], $uploadIconFile))
-                    {
+                    if (!move_uploaded_file($_FILES['icon_src']['tmp_name'], $uploadIconFile)) {
                         echo "Файл не был успешно загружен 404<br>";
                         echo $uploadIconFile;
                     }
                 } else {
                     mkdir($uploadIconsPath);
-                    if (is_dir($uploadIconsPath))
-                    {
+                    if (is_dir($uploadIconsPath)) {
                         //загрузка файла
                         $uploadIconFile = $uploadIconsPath . basename($_FILES['icon_src']['name']);
-                        if (!move_uploaded_file($_FILES['icon_src']['tmp_name'], $uploadIconFile))
-                        {
+                        if (!move_uploaded_file($_FILES['icon_src']['tmp_name'], $uploadIconFile)) {
                             echo "Файл не был успешно загружен 404<br>";
                             echo $uploadIconFile;
                         }
                     }
                 }
 
-                $demo['icon_src'] = "/".$uploadIconFile;
+                $demo['icon_src'] = "/" . $uploadIconFile;
             }
 
-            if (!empty($_FILES['content_src']['tmp_name']))
-            {
-                $uploadSrcPath = "repository/user/demonstrations/".$demo['type']."/contents/";
-                if (is_dir($uploadSrcPath))
-                {
+            if (!empty($_FILES['content_src']['tmp_name'])) {
+                $uploadSrcPath = "repository/user/demonstrations/" . $demo['type'] . "/contents/";
+                if (is_dir($uploadSrcPath)) {
                     //загрузка файла
-                    $filename=basename($_FILES['content_src']['name']);
-                    $newFileNameSrc='file_'.time().substr($filename, strpos($filename,'.'), strlen($filename)-1);
+                    $filename = basename($_FILES['content_src']['name']);
+                    $newFileNameSrc = 'file_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
 
                     $uploadSrcFile = $uploadSrcPath . $newFileNameSrc;
-                    if (!move_uploaded_file($_FILES['content_src']['tmp_name'], $uploadSrcFile))
-                    {
+                    if (!move_uploaded_file($_FILES['content_src']['tmp_name'], $uploadSrcFile)) {
                         echo "Файл не был успешно загружен 404<br>";
                         echo $uploadSrcFile;
                     }
                 } else {
                     mkdir($uploadSrcPath);
-                    if (is_dir($uploadSrcPath))
-                    {
+                    if (is_dir($uploadSrcPath)) {
                         $uploadSrcFile = $uploadSrcPath . basename($_FILES['content_src']['name']);
-                        if (!move_uploaded_file($_FILES['content_src']['tmp_name'], $uploadSrcFile))
-                        {
+                        if (!move_uploaded_file($_FILES['content_src']['tmp_name'], $uploadSrcFile)) {
                             echo "Файл не был успешно загружен 404<br>";
                             echo $uploadSrcFile;
                         }
 
                     }
                 }
-                $demo['src'] = "/".$uploadSrcFile;
+                $demo['src'] = "/" . $uploadSrcFile;
             }
 
             $model->setAttributes($demo, false);
-            if ($model->validate())
-            {
-                if ($model->save())
-                {
-                    return $this->goBack('');
-                }
-                else
-                {
-                    userHelperClass::pre('save error');
-                }
-            }
-            else
-            {
-                userHelperClass::pre('validate error');
-            }
 
-        }
-        else
-        {
+            if ($model->validate()) {
+                if ($model->save()) {
+                    return $this->goBack('');
+                } else {
+                    userHelperClass::pre('save error');
+                    exit();
+                }
+            } else {
+                userHelperClass::pre('validate error');
+                exit();
+            }
+        } else {
             return $this->render('new_slide');
         }
     }
@@ -707,128 +763,91 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
      */
     public function actionEditSlide($id)
     {
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             $demo = Yii::$app->request->post('demo');
 
             $model = Demonstrations::findOne($id);
-             $demo['update_date'] = date("Y-m-d H:i:s");
+            $demo['update_date'] = date("Y-m-d H:i:s");
             ($demo['is_active'] == 'on' ? $demo['is_active'] = '1' : $demo['is_active'] = '0');
             ($demo['is_visible'] == 'on' ? $demo['is_visible'] = '1' : $demo['is_visible'] = '0');
 
-            if (!empty($_FILES['icon_src']['tmp_name']))
-            {
-                $uploadIconsPath = "repository/user/demonstrations/".$demo['type']."/icons/";
-                if (is_dir($uploadIconsPath))
-                {
+            if (!empty($_FILES['icon_src']['tmp_name'])) {
+                $uploadIconsPath = "repository/user/demonstrations/" . $demo['type'] . "/icons/";
+                if (is_dir($uploadIconsPath)) {
                     //загрузка файла
-                    $filename=basename($_FILES['icon_src']['name']);
-                    $newFileNameIcon='icon_'.time().substr($filename, strpos($filename,'.'), strlen($filename)-1);
+                    $filename = basename($_FILES['icon_src']['name']);
+                    $newFileNameIcon = 'icon_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
 
                     $uploadIconFile = $uploadIconsPath . $newFileNameIcon;
-                    if (!move_uploaded_file($_FILES['icon_src']['tmp_name'], $uploadIconFile))
-                    {
+                    if (!move_uploaded_file($_FILES['icon_src']['tmp_name'], $uploadIconFile)) {
                         echo "Файл не был успешно загружен 404<br>";
                         echo $uploadIconFile;
                     }
                 } else {
                     mkdir($uploadIconsPath);
-                    if (is_dir($uploadIconsPath))
-                    {
+                    if (is_dir($uploadIconsPath)) {
                         //загрузка файла
                         $uploadIconFile = $uploadIconsPath . basename($_FILES['icon_src']['name']);
-                        if (!move_uploaded_file($_FILES['icon_src']['tmp_name'], $uploadIconFile))
-                        {
+                        if (!move_uploaded_file($_FILES['icon_src']['tmp_name'], $uploadIconFile)) {
                             echo "Файл не был успешно загружен 404<br>";
                             echo $uploadIconFile;
                         }
                     }
                 }
-                unlink($_SERVER['DOCUMENT_ROOT'].$model->icon_src);
-                $demo['icon_src'] = "/".$uploadIconFile;
+                unlink($_SERVER['DOCUMENT_ROOT'] . $model->icon_src);
+                $demo['icon_src'] = "/" . $uploadIconFile;
             }
 
-            if (!empty($_FILES['content_src']['tmp_name']))
-            {
-                $uploadSrcPath = "repository/user/demonstrations/".$demo['type']."/contents/";
-                if (is_dir($uploadSrcPath))
-                {
+            if (!empty($_FILES['content_src']['tmp_name'])) {
+                $uploadSrcPath = "repository/user/demonstrations/" . $demo['type'] . "/contents/";
+                if (is_dir($uploadSrcPath)) {
                     //загрузка файла
-                    $filename=basename($_FILES['content_src']['name']);
-                    $newFileNameSrc='file_'.time().substr($filename, strpos($filename,'.'), strlen($filename)-1);
+                    $filename = basename($_FILES['content_src']['name']);
+                    $newFileNameSrc = 'file_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
 
                     $uploadSrcFile = $uploadSrcPath . $newFileNameSrc;
-                    if (!move_uploaded_file($_FILES['content_src']['tmp_name'], $uploadSrcFile))
-                    {
+                    if (!move_uploaded_file($_FILES['content_src']['tmp_name'], $uploadSrcFile)) {
                         echo "Файл не был успешно загружен 404<br>";
                         echo $uploadSrcFile;
                     }
                 } else {
                     mkdir($uploadSrcPath);
-                    if (is_dir($uploadSrcPath))
-                    {
+                    if (is_dir($uploadSrcPath)) {
                         $uploadSrcFile = $uploadSrcPath . basename($_FILES['content_src']['name']);
-                        if (!move_uploaded_file($_FILES['content_src']['tmp_name'], $uploadSrcFile))
-                        {
+                        if (!move_uploaded_file($_FILES['content_src']['tmp_name'], $uploadSrcFile)) {
                             echo "Файл не был успешно загружен 404<br>";
                             echo $uploadSrcFile;
                         }
 
                     }
                 }
-                unlink($_SERVER['DOCUMENT_ROOT'].$model->src);
-                $demo['src'] = "/".$uploadSrcFile;
+                unlink($_SERVER['DOCUMENT_ROOT'] . $model->src);
+                $demo['src'] = "/" . $uploadSrcFile;
             }
 
             $model->setAttributes($demo, false);
-            if ($model->validate())
-            {
-                if ($model->save())
-                {
+            if ($model->validate()) {
+                if ($model->save()) {
                     return $this->goBack('');
-                }
-                else
-                {
+                } else {
                     userHelperClass::pre('save error');
+                    exit();
                 }
-            }
-            else
-            {
+            } else {
                 userHelperClass::pre('validate error');
+                exit();
             }
 
-        }
-        else
-        {
-            if (($demoModel = Demonstrations::findOne($id)) !== null)
-            {
+        } else {
+            if (($demoModel = Demonstrations::findOne($id)) !== null) {
                 return $this->render('edit_slide', [
                     'id' => $id,
                     'demoModel' => $demoModel,
                 ]);
-            }
-            else
-            {
+            } else {
                 throw new NotFoundHttpException('The requested page does not exist.');
             }
         }
-    }
-
-    public function actionEditScenario($id)
-    {
-        //ML_TODO: edit scenario
-        if (Yii::$app->request->isPost)
-        {
-            userHelperClass::pre('isPost');
-            userHelperClass::pre(Yii::$app->request->post);
-        }
-        else
-        {
-            return $this->render('edit_scenario',[
-                'id' => $id
-            ]);
-        }
-
     }
 
     /**
@@ -839,8 +858,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
     public function actionNewLection()
     {
         //ML_TODO: actionNewLection
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             $model = new Lections();
             $lection = Yii::$app->request->post('lection');
             $lection['create_date'] = date("Y-m-d H:i:s");
@@ -848,68 +866,53 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
             $lection['is_active'] == 'on' ? $lection['is_active'] = '1' : $lection['is_active'] = '0';
 
 
-            if ($_FILES['poster_src']['size'] > 0)
-            {
+            if ($_FILES['poster_src']['size'] > 0) {
                 $poster_file = $_FILES['poster_src'];
                 $uploadPosterPath = "repository/user/lections/";
-                if (is_dir($uploadPosterPath))
-                {
+                if (is_dir($uploadPosterPath)) {
                     //загрузка файла
                     $filename = basename($poster_file['name']);
                     $newFileName = 'poster_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
                     $uploadPosterFile = $uploadPosterPath . $newFileName;
-                    if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile))
-                    {
+                    if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile)) {
                         echo "Файл не был успешно загружен 404<br>";
                         echo $uploadPosterFile;
                     }
 
-                }
-                else
-                {
+                } else {
                     mkdir($uploadPosterPath);
-                    if (is_dir($uploadPosterPath))
-                    {
+                    if (is_dir($uploadPosterPath)) {
                         //загрузка файла
                         $filename = basename($poster_file['name']);
                         $newFileName = 'poster_' . time() . substr($filename, strpos($filename, '.'), strlen($filename) - 1);
                         $uploadPosterFile = $uploadPosterPath . $newFileName;
-                        if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile))
-                        {
+                        if (!move_uploaded_file($poster_file['tmp_name'], $uploadPosterFile)) {
                             echo "Файл не был успешно загружен 404<br>";
                             echo $uploadPosterFile;
                         }
                     }
                 }
-                $lection['poster'] = "/".$uploadPosterFile;
-            }
-            else
-            {
+                $lection['poster'] = "/" . $uploadPosterFile;
+            } else {
                 $lection['poster'] = "";
             }
             //Yii::$app->userHelperClass->pre($lection);
             //die();
             $model->setAttributes($lection, false);
-            if ($model->validate())
-            {
-                if ($model->save())
-                {
+            if ($model->validate()) {
+                if ($model->save()) {
                     # return $this->goBack('');
                     return $this->redirect(['view', 'id' => $model->id]);
-                }
-                else
-                {
+                } else {
                     userHelperClass::pre('save error');
+                    exit();
                 }
-            }
-            else
-            {
+            } else {
                 userHelperClass::pre('validate error');
+                exit();
             }
 
-        }
-        else
-        {
+        } else {
             $categoryItems = Category::find()->asArray()->all();
 
             $user_id = Yii::$app->user->identity->getId();
@@ -940,8 +943,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
 
 
             //  Список видео доступных всем: (или админу если пользователь админ role=20)
-            if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
-            {
+            if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN) {
                 //  SELECT * FROM  `video` WHERE is_active = 1
                 $allVideoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
                     [':user_id' => $user_id])->queryScalar();
@@ -962,9 +964,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                         ],
                     ],
                 ]);
-            }
-            else
-            {
+            } else {
                 //  SELECT * FROM  `video` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id = 2)
                 $allVideoCount = Yii::$app->db->createCommand('SELECT count(*) FROM  `video` WHERE is_active = 1 AND is_visible = 1 AND id NOT IN (SELECT id FROM  `video` WHERE is_active = 1 AND user_id =:user_id)',
                     [':user_id' => $user_id])->queryScalar();
@@ -1005,6 +1005,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
      */
     public function actionUpdate($id)
     {
+        /** @var TYPE_NAME $model */
         $model = $this->findModel($id);
         //$demo['update_date'] = date("Y-m-d H:i:s");
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -1026,20 +1027,36 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
     public function actionDel($id)
     {
         $lectionModel = $this->findModel($id);
-        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
-        {
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN) {
             $this->deleteLection($lectionModel);
-        }
-        else
-        {
+        } else {
             $user_id = Yii::$app->user->identity->getId();
-            if ($lectionModel->user_id == $user_id)
-            {
+            if ($lectionModel->user_id == $user_id) {
                 $this->deleteLection($lectionModel);
-            }
-            else
-            {
+            } else {
                 userHelperClass::pre("delete forbitten");
+                exit();
+            }
+        }
+    }
+
+    /**
+     * @param $lectionModel
+     * @return \yii\web\Response
+     */
+    private function deleteLection($lectionModel)
+    {
+        if (stristr($lectionModel->poster, 'repository') == true) {
+            if (true == userHelperClass::rmRec(substr($lectionModel->poster, 1))) {
+                $connection = Yii::$app->db;
+                $connection->createCommand()->delete('demonstration_time', 'lection_id = ' . $lectionModel->id)->execute();
+                $connection->createCommand()->delete('command', 'lection_id = ' . $lectionModel->id)->execute();
+
+                $lectionModel->delete();
+                return $this->redirect(['lections/index']);
+            } else {
+                userHelperClass::pre("Ошибка при удалении файла " . substr($lectionModel->poster, 1) . ", попробуйте позже");
+                exit();
             }
         }
     }
@@ -1055,72 +1072,49 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
     public function actionSlideDel($id)
     {
         //ML_TODO: Удаление
-        try
-        {
+        try {
             $demoModel = $this->findDemoModel($id);
-        }
-        catch (NotFoundHttpException $e)
-        {
+        } catch (NotFoundHttpException $e) {
             userHelperClass::pre($e);
+            exit();
         }
 
-        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN)
-        {
-            if ((stristr($demoModel->icon_src, 'repository') == true) && (stristr($demoModel->src, 'repository') == true))
-            {
-                if ( unlink(substr($demoModel->icon_src, 1)) && unlink(substr($demoModel->src, 1)) )
-                {
+        if (Yii::$app->user->identity->role == \app\models\User::ROLE_ADMIN) {
+            if ((stristr($demoModel->icon_src, 'repository') == true) && (stristr($demoModel->src, 'repository') == true)) {
+                if (unlink(substr($demoModel->icon_src, 1)) && unlink(substr($demoModel->src, 1))) {
+                    $this->findDemoModel($id)->delete();
+                    return $this->redirect(['lections/slides/']);
+                } else {
+                    userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
+                    exit();
+                }
+            } else {
+                $this->findDemoModel($id)->delete();
+                return $this->redirect(['lections/slides/']);
+            }
+        } else {
+            $user_id = Yii::$app->user->identity->getId();
+            if ($demoModel->user_id == $user_id) {
+                if ((stristr($demoModel->icon_src, 'repository') == true) && (stristr($demoModel->src, 'repository') == true)) {
+                    if (unlink(substr($demoModel->icon_src, 1)) && unlink(substr($demoModel->src, 1))) {
+                        $this->findDemoModel($id)->delete();
+                        return $this->redirect(['lections/slides/']);
+                    } else {
+                        userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
+                        exit();
+                    }
+                } else {
                     $this->findDemoModel($id)->delete();
                     return $this->redirect(['lections/slides/']);
                 }
-                else
-                {
-                    userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
-                }
-            }
-        }
-        else
-        {
-            $user_id = Yii::$app->user->identity->getId();
-            if ($demoModel->user_id == $user_id)
-            {
-                if ((stristr($demoModel->icon_src, 'repository') == true) && (stristr($demoModel->src, 'repository') == true))
-                {
-                    if ( unlink(substr($demoModel->icon_src, 1)) && unlink(substr($demoModel->src, 1)) )
-                    {
-                        $this->findDemoModel($id)->delete();
-                        return $this->redirect(['lections/slides/']);
-                    }
-                    else
-                    {
-                        userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
-                    }
-                }
-            }
-            else
-            {
+            } else {
                 userHelperClass::pre("forbitten");
+                exit();
             }
         }
-        die();
+        //die();
         //$this->findModel($id)->delete();
         //return $this->redirect(['index']);
-    }
-
-    /**
-     * Finds the Lections model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Lections the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Lections::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
     }
 
     /**
@@ -1134,124 +1128,6 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
-    /**
-     * @param $id
-     * @return array|null|\yii\db\ActiveRecord
-     * @throws NotFoundHttpException
-     */
-    protected function findRelationModel($id)
-    {
-        /*
-        SELECT
-            l.id, l.name, l.poster, v.name, v.file_src
-        FROM
-            lections AS l
-        LEFT JOIN
-            video AS v
-        ON
-            v.lection_id=l.id
-        WHERE
-            l.id=1
-        */
-        $model = Lections::find()
-            ->select('* ,video.autor AS video_autor ,lections.autor AS lection_autor ,lections.id AS lection_id, video.id AS video_id, lections.name AS lection_name, video.name AS video_name')
-            ->from('lections')
-            ->leftjoin('video', 'video.id = lections.video_id')
-            ->andWhere('lections.id = '.$id)
-            ->asArray()
-            ->one();
-
-
-        if (($model) !== null)
-        {
-            return $model;
-        }
-        else
-        {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
-    /**
-     * @param $id
-     * @return array|\yii\db\ActiveRecord[]
-     * @throws NotFoundHttpException
-     */
-    function findDemonstrationsList($id)
-    {
-        /*
-        SELECT
-            demonstration_time.id, demonstration_time.lection_id AS lection_id, demonstration.autor,
-            demonstration.name, demonstration.icon_src, demonstration.src, demonstration_time.time
-        FROM
-            demonstration
-        LEFT JOIN
-            demonstration_time ON demonstration_time.demonstration_id = demonstration.id
-        WHERE
-            demonstration_time.lection_id =1
-        ORDER BY
-            `demonstration_time`.`time` +0 ASC
-        */
-        $demonstrations_model = Lections::find()
-            ->select('demonstration_time.id, demonstration_time.lection_id AS lection_id, demonstration.autor, demonstration.name, demonstration.type, demonstration.icon_src, demonstration.src, demonstration_time.time')
-            ->from('demonstration')
-            ->leftJoin('demonstration_time', 'demonstration_time.demonstration_id = demonstration.id')
-            ->andWhere('demonstration_time.lection_id = '.$id)
-            ->addOrderBy(['`demonstration_time`.`time`'.'+0' => SORT_ASC])
-            ->asArray()
-            ->all();
-
-
-        if (($demonstrations_model) !== null) {
-            return $demonstrations_model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
-    /**
-     * @param $id
-     * @return array
-     * @throws NotFoundHttpException
-     * @throws \yii\db\Exception
-     */
-    function findCommandsList($id)
-    {
-        $commands_model = Yii::$app->db->createCommand(
-            'SELECT * FROM command WHERE lection_id = '.$id.' ORDER BY time ASC'
-        )->queryAll();
-
-        if (($commands_model) !== null) {
-            return $commands_model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
-    /**
-     * @param $lectionModel
-     * @return \yii\web\Response
-     */
-    private function deleteLection($lectionModel)
-    {
-        if(stristr($lectionModel->poster, 'repository') == true)
-        {
-            if (true == userHelperClass::rmRec(substr($lectionModel->poster, 1)))
-            {
-                $connection = Yii::$app->db;
-                $connection->createCommand()->delete('demonstration_time', 'lection_id = '.$lectionModel->id)->execute();
-                $connection->createCommand()->delete('command', 'lection_id = '.$lectionModel->id)->execute();
-
-                $lectionModel->delete();
-                return $this->redirect(['lections/index']);
-            }
-            else
-            {
-                userHelperClass::pre("Ошибка при удалении файла ".substr($lectionModel->poster, 1). ", попробуйте позже");
-            }
         }
     }
 }

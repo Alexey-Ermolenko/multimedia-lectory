@@ -26,9 +26,9 @@ phpunit.phar
 tests/_output/*
 tests/_support/_generated
 
-/multimedia-lectory.verstka/
-/upload/
-/repository/
+multimedia-lectory.verstka/
+upload/
+repository/
 assets/*
 !assets/.gitignore
 protected/runtime/*
@@ -46,9 +46,16 @@ themes/classic/views/
 /vagrant/
 
 # composer vendor dir
-/web/assets/
-/vendor/
-/runtime/
-/tests/
+web/assets/
+vendor/
+runtime/
+tests/
 
 index.php
+
+.bowerrc
+_config.yml
+LICENSE.md
+yii
+yii.bat
+codeception.yml

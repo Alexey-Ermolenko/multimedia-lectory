@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\UserHelperClass;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -157,8 +158,15 @@ class SiteController extends Controller
     {
         //ML_TODO: actionAbout
         $model = new Contact();
-        if ($model->load(Yii::$app->request->post()) && $model->save() && $model->sendEmail('contactMail', 'Сообщение из формы', ['params' => 'Ёбаный пиздец']))
+        if ($model->load(Yii::$app->request->post()) && $model->save())
         {
+            $contact = Yii::$app->request->post();
+            //UserHelperClass::pre(Yii::$app->request->post());
+            //die();
+
+            $model->sendEmail('contactMail', 'Мультимедиа-лекторий - Сообщение сайта', [
+                'params' => $contact
+            ]);
 
             Yii::$app->session->setFlash('aboutFormSubmitted');
             //return $this->render('about', ['model' => $model]);

@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\UserHelperClass;
 use Yii;
 
 /**
@@ -82,10 +83,6 @@ class Contact extends \yii\db\ActiveRecord
 
         return true;
          */
-        #   Yii::$app->userHelperClass->pre('777');
-        #   die();
-        //  lectorymultimedia@yandex.ru
-        //  a.o.ermolenko@gmail.com
         /*
         $date = date('Y-m-d H:i:s');
         $to = "a.o.ermolenko@gmail.com, lectorymultimedia@yandex.ru";
@@ -108,13 +105,18 @@ class Contact extends \yii\db\ActiveRecord
 
         mail($to,$subject,$message,$headers);
         */
-
+        $copy = $params['params']['Contact']['copy_email']== 'on' ? [$params['params']['Contact']['email'] => $params['params']['Contact']['name']] : null;
         $date = date('Y-m-d H:i:s');
+        $params['date'] = $date;
+        $params['site_url'] = $_SERVER['SERVER_NAME'];
+
         \Yii::$app->mailer->getView()->params['userName'] = "username";
         $result = \Yii::$app->mailer->compose([
             'html' => $view . '-html',
             'text' => $view . '-text',
-        ], $params)->setTo(["lectorymultimedia@yandex.ru" => "user"])
+        ], $params)
+            ->setTo(["lectorymultimedia@yandex.ru"])
+            ->setCc($copy)
             ->setFrom("lectorymultimedia@yandex.ru")
             ->setSubject($subject)
             ->send();

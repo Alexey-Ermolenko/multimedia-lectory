@@ -232,7 +232,7 @@ $this->title = 'Мультимедиа-лекторий | О нас';
                             Отправляя сообщение вы соглашаетесь с условиями обработки данных
                         </p>
                     </div>
-                    <button name="contact-button" class="btn btn-outline-info btn-rounded btn-block z-depth-0 my-4 waves-effect" type="submit">
+                    <button class="btn btn-outline-info btn-rounded btn-block z-depth-0 my-4 waves-effect" type="submit">
                         Отправить
                     </button>
                 </form>

@@ -1,4 +1,5 @@
 <?
+
 use yii\grid\GridView;
 use yii\helpers\Html;
 use app\models\DemonstrationsSearch;
@@ -9,7 +10,7 @@ use app\components\userHelperClass;
 $this->title = 'Редактирование слайда';
 ?>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.mdb-select').material_select();
     });
 </script>
@@ -19,7 +20,7 @@ $this->title = 'Редактирование слайда';
     <!--Page heading-->
     <div class="row">
         <div class="col-md-12">
-            <h1 class="h1-responsive">Мультимедиа-лекторий | Редактирование слайда #<?=$demoModel->id?></h1>
+            <h1 class="h1-responsive">Мультимедиа-лекторий | Редактирование слайда #<?= $demoModel->id ?></h1>
         </div>
     </div>
     <!--/.Page heading-->
@@ -51,85 +52,162 @@ $this->title = 'Редактирование слайда';
     <div class="row">
         <div class="col-md-12">
             <form action="" method="post" enctype="multipart/form-data">
-                <input name="demo[user_id]" value="<?=$demoModel->user_id?>" type="hidden">
+                <input name="demo[user_id]" value="<?= $demoModel->user_id ?>" type="hidden">
+                <input name="demo[type]" value="slide" type="hidden">
                 <div class="card add-slide-form">
-                    <div class="md-form col-md-4 m-b-3">
+                    <!--
+                    <div class="md-form col-md-12 m-b-12">
                         <select class="mdb-select" name="demo[type]">
-                            <option <?= ($demoModel->type=='slide') ? "selected":"" ?> value="slide" data-icon="/web/img/slide.jpg" class="rounded-circle">slide</option>
-                            <option <?= ($demoModel->type=='3D') ? "selected":"" ?> value="3D" data-icon="/web/img/3D.jpg" class="rounded-circle">3D</option>
-                            <option <?= ($demoModel->type=='TEST_TYPE') ? "selected":"" ?> value="TEST_TYPE" data-icon="/web/img/TEST_TYPE.jpg" class="rounded-circle">TEST TYPE</option>
+                            <option <?= ($demoModel->type == 'slide') ? "selected" : "" ?> value="slide" data-icon="/web/img/slide.jpg" class="rounded-circle">slide</option>
+                            <option <?= ($demoModel->type == '3D') ? "selected" : "" ?> value="3D" data-icon="/web/img/3D.jpg" class="rounded-circle">3D</option>
+                            <option <?= ($demoModel->type == 'TEST_TYPE') ? "selected" : "" ?> value="TEST_TYPE" data-icon="/web/img/TEST_TYPE.jpg" class="rounded-circle">TEST TYPE</option>
                         </select>
                         <label>Тип демонстрационного объекта</label>
                     </div>
-
-                    <div class="md-form col-md-4 m-b-3">
+                    -->
+                    <div class="md-form col-md-12 m-b-12">
                         <label>Название</label>
-                        <input id="form3" name="demo[name]" class="form-control" value="<?=$demoModel->name?>" type="text">
+                        <input id="form3" name="demo[name]" class="form-control" value="<?= $demoModel->name ?>"
+                               type="text">
                     </div>
-                    <div class="md-form col-md-4 m-b-3">
+                    <div class="md-form col-md-12 m-b-12">
                         <label>Автор</label>
-                        <input id="form2" name="demo[autor]" class="form-control" value="<?=$demoModel->autor?>" type="text">
+                        <input id="form2" name="demo[autor]" class="form-control" value="<?= $demoModel->autor ?>"
+                               type="text">
                     </div>
-                    <div class="md-form col-md-4 m-b-3">
+                    <div class="md-form col-md-12 m-b-12">
                         <p class="mr-4 mt-1">Активность</p>
                         <div class="switch round primary-switch text-muted font-small">
                             <label class="mt-2">
                                 Off
-                                <input name="demo[is_active]" type="checkbox" <?=(($demoModel->is_active=='1') ? "checked": "")?>>
+                                <input name="demo[is_active]"
+                                       type="checkbox" <?= (($demoModel->is_active == '1') ? "checked" : "") ?>>
                                 <span class="lever"></span>
                                 On
                             </label>
                         </div>
                     </div>
-                    <div class="md-form col-md-4 m-b-3">
+                    <div class="md-form col-md-12 m-b-12">
                         <p class="mr-4 mt-1">Видимость всем</p>
                         <!-- Switch -->
                         <div class="switch round primary-switch text-muted font-small">
                             <label class="mt-2">
                                 Off
-                                <input name="demo[is_visible]" type="checkbox" <?=(($demoModel->is_visible=='1') ? "checked": "")?>>
+                                <input name="demo[is_visible]"
+                                       type="checkbox" <?= (($demoModel->is_visible == '1') ? "checked" : "") ?>>
                                 <span class="lever"></span>
                                 On
                             </label>
                         </div>
                     </div>
-                </div>
+                    <br>
+                    <hr>
+                    <br>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="md-form file-field">
+                                <img src="<?= $demoModel->icon_src ?>" alt="<?= $demoModel->icon_src ?>"
+                                     class="edit_form-img float-left img-thumbnail">
+                            </div>
+                        </div>
+                    </div>
+                    <br><hr><br>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                       aria-controls="home"
+                                       aria-selected="true">Загрузить по ссылке</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                       aria-controls="profile"
+                                       aria-selected="false">Загрузить файл</a>
+                                </li>
 
-                <div class="md-form file-field">
-                    <img src="<?=$demoModel->icon_src?>" alt="<?=$demoModel->icon_src?>" class="edit_form-img float-left img-thumbnail">
-                </div>
-                <br><br><br><br><br><br>
-                <div class="md-form file-field">
-                    <label>Загрузить иконку демонстрационного объекта</label><br><br>
-                    <div class="btn btn-primary btn-sm">
-                        <span>Выбрать файл</span>
-                        <input name="icon_src" type="file" value="<?=$demoModel->icon_src?>">
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                     aria-labelledby="home-tab">
+                                    <div class="md-form file-field">
+                                        <input name="demo[icon_src]" type="text" id="inputSMEx"
+                                               value="<?= $demoModel->icon_src ?>"
+                                               placeholder="Загрузить иконку демонстрационного объекта по ссылке"
+                                               class="form-control form-control-sm">
+                                        <label for="inputSMEx">Загрузить иконку демонстрационного объекта по
+                                            ссылке</label>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <div class="md-form file-field">
+                                        <div class="btn btn-primary btn-sm">
+                                            <span>Выберите файл</span>
+                                            <input name="icon_src" type="file" value="<?= $demoModel->icon_src ?>">
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" value="<?= $demoModel->icon_src ?>"
+                                                   placeholder="Загрузить иконку демонстрационного объекта" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" value="<?=$demoModel->icon_src?>" placeholder="Загрузите изображение пользователя" type="text">
+                    <br>
+                    <hr>
+                    <br>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home2" role="tab"
+                                       aria-controls="home"
+                                       aria-selected="true">Загрузить по ссылке</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile2" role="tab"
+                                       aria-controls="profile"
+                                       aria-selected="false">Загрузить файл</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent2">
+                                <div class="tab-pane fade show active" id="home2" role="tabpanel"
+                                     aria-labelledby="home-tab">
+                                    <div class="md-form file-field">
+                                        <input name="demo[src]" type="text" id="inputSMEx"
+                                               value="<?= $demoModel->src ?>"
+                                               placeholder="Загрузить файл демонстрационного объекта по ссылке"
+                                               class="form-control form-control-sm">
+                                        <label for="inputSMEx">Загрузить файл демонстрационного объекта по
+                                            ссылке</label>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="profile2" role="tabpanel" aria-labelledby="profile-tab">
+                                    <div class="md-form file-field">
+                                        <label>Загрузить файл демонстрационного объекта</label><br><br>
+                                        <div class="btn btn-primary btn-sm float-left">
+                                            <span>Выбрать файл</span>
+                                            <input name="content_src" type="file" value="<?= $demoModel->src ?>">
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text" value="<?= $demoModel->src ?>"
+                                                   placeholder="Загрузить файл демонстрационного объекта">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-
-                <div class="md-form file-field">
-                    <label>Загрузить файл демонстрационного объекта</label><br><br>
-                    <div class="btn btn-primary btn-sm float-left">
-                        <span>Выбрать файл</span>
-                        <input name="content_src" type="file" value="<?=$demoModel->src?>">
+                    <hr>
+                    <div class="text-left">
+                        <button type="submit" class="btn btn-success">Загрузить <i class="fa fa-paper-plane-o ml-1"></i>
+                        </button>
                     </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text" value="<?=$demoModel->src?>" placeholder="Upload your file">
-                    </div>
-                </div>
-                <div class="text-left">
-                    <button type="submit" class="btn btn-success">Загрузить <i class="fa fa-paper-plane-o ml-1"></i></button>
                 </div>
             </form>
-
         </div>
-
     </div>
-
     <br><br>
 </div>
 <!--/.Main layout-->
