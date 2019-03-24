@@ -54,10 +54,10 @@ $this->title = 'Мультимедиа-лекторий | О нас';
                 <div class="full-bg-img flex-center white-text">
                     <ul class="animated fadeIn col-md-12">
                         <li>
-                            <h1 class="h1-responsive">Weekend in the nature - the best way to relax</h1>
+                            <h1 class="h1-responsive">Новое слово в онлайн-образовании</h1>
                         </li>
                         <li>
-                            <p>8 Reasons why you need to spend more time in nature</p>
+                            <p>Инновационный способ подачи образовательного контента</p>
                         </li>
                         <li>
                             <a target="_blank" href="https://mdbootstrap.com/forums/forum/support/" class="btn btn-default btn-lg waves-effect waves-light" rel="nofollow">Read more</a>
