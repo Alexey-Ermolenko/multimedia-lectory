@@ -34,10 +34,11 @@ class LectionsController extends Controller
     /**
      * Lists all Lections models.
      * @return mixed
+     * @throws \yii\db\Exception
      */
     public function actionIndex()
     {
-        $params = Yii::$app->request->queryParams;
+        //$params = Yii::$app->request->queryParams;
 
         #Yii::$app->userHelperClass->pre($params);
 
@@ -100,6 +101,7 @@ class LectionsController extends Controller
      * Displays a single Lections model.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
@@ -134,6 +136,7 @@ class LectionsController extends Controller
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionUpdate($id)
     {
@@ -153,6 +156,10 @@ class LectionsController extends Controller
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -211,6 +218,11 @@ class LectionsController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws NotFoundHttpException
+     */
     function findDemonstrationsList($id)
     {
         /*

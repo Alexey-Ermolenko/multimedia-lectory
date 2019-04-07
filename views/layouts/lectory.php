@@ -57,7 +57,7 @@ $this->beginPage() ?>
 
                 <!-- Search form -->
                 <form action="/site/search" class="form-inline">
-                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Поиск лекций" aria-label="Поиск лекций" name="q">
                     <button class="btn btn-success btn-sm my-0" type="submit">Поиск</button>
                 </form>
 

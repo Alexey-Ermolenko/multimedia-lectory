@@ -4,28 +4,23 @@ namespace app\controllers;
 
 namespace app\modules\admin\controllers;
 
+use app\components\userHelperClass;
+use app\Models\Category;
+use app\models\Demonstrations;
+use app\models\DemonstrationsSearch;
+use app\models\Lections;
+use app\models\LectionsSearch;
+use app\models\Scenarios;
+use app\models\ScenariosSearch;
 use app\models\Video;
 use app\models\VideoSearch;
 use Yii;
-use app\models\Lections;
-use app\models\LectionsSearch;
+use yii\data\SqlDataProvider;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-
-use app\models\Scenarios;
-use app\models\ScenariosSearch;
-
-use app\models\Demonstrations;
-use app\models\DemonstrationsSearch;
-
-use app\Models\Category;
-
-use yii\helpers\ArrayHelper;
-use yii\data\SqlDataProvider;
-
-use yii\filters\AccessControl;
-use app\components\userHelperClass;
 
 
 /**
@@ -675,6 +670,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         ]);
     }
 
+    /**
+     * @return string|\yii\web\Response
+     * @throws \yii\base\ExitException
+     * @throws \yii\base\Exception
+     */
     public function actionNewSlide()
     {
         if (Yii::$app->request->isPost) {
@@ -710,6 +710,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 }
 
                 $demo['icon_src'] = "/" . $uploadIconFile;
+            } elseif ($demo['icon_src']) {
+                $file = userHelperClass::downloadFile($demo['icon_src'], "repository/user/demonstrations/" . $demo['type'] . "/icons/");
+                if ($file) {
+                    $demo['icon_src'] = '/' . $file;
+                }
             }
 
             if (!empty($_FILES['content_src']['tmp_name'])) {
@@ -736,8 +741,12 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                     }
                 }
                 $demo['src'] = "/" . $uploadSrcFile;
+            } elseif ($demo['src']) {
+                $file = userHelperClass::downloadFile($demo['src'], "repository/user/demonstrations/" . $demo['type'] . "/contents/");
+                if ($file) {
+                    $demo['src'] = '/' . $file;
+                }
             }
-
             $model->setAttributes($demo, false);
 
             if ($model->validate()) {
@@ -745,11 +754,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                     return $this->goBack('');
                 } else {
                     userHelperClass::pre('save error');
-                    exit();
+                    Yii::$app->end();
                 }
             } else {
                 userHelperClass::pre('validate error');
-                exit();
+                Yii::$app->end();
             }
         } else {
             return $this->render('new_slide');
@@ -760,6 +769,8 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
      * @param $id
      * @return string
      * @throws NotFoundHttpException
+     * @throws \yii\base\ExitException
+     * @throws \yii\base\Exception
      */
     public function actionEditSlide($id)
     {
@@ -794,8 +805,15 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                         }
                     }
                 }
-                unlink($_SERVER['DOCUMENT_ROOT'] . $model->icon_src);
+                userHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->icon_src);
+
                 $demo['icon_src'] = "/" . $uploadIconFile;
+            } elseif ($demo['icon_src']) {
+                $file = userHelperClass::downloadFile($demo['icon_src'], "repository/user/demonstrations/" . $demo['type'] . "/icons/");
+                if ($file) {
+                    userHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->icon_src);
+                    $demo['icon_src'] = '/' . $file;
+                }
             }
 
             if (!empty($_FILES['content_src']['tmp_name'])) {
@@ -821,8 +839,15 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
 
                     }
                 }
-                unlink($_SERVER['DOCUMENT_ROOT'] . $model->src);
+                userHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->src);
+
                 $demo['src'] = "/" . $uploadSrcFile;
+            } elseif ($demo['src']) {
+                $file = userHelperClass::downloadFile($demo['src'], "repository/user/demonstrations/" . $demo['type'] . "/contents/");
+                if ($file) {
+                    userHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->src);
+                    $demo['src'] = '/' . $file;
+                }
             }
 
             $model->setAttributes($demo, false);
@@ -831,11 +856,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                     return $this->goBack('');
                 } else {
                     userHelperClass::pre('save error');
-                    exit();
+                    Yii::$app->end();
                 }
             } else {
                 userHelperClass::pre('validate error');
-                exit();
+                Yii::$app->end();
             }
 
         } else {

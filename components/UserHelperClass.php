@@ -157,20 +157,21 @@ class UserHelperClass
         $format = str_replace('jpeg', 'jpg', $extension);
 
 
-        if (!file_put_contents(__DIR__ . $path . $name . $format, $raw))
+        if (!file_put_contents($path . $name . $format, $raw))
         {
             throw new Exception('При сохранении изображения на диск произошла ошибка.');
             return false;
         }
         else
         {
-            return true;
+            $result = $path . $name . $format;
+            return $result;
         }
     }
 
     /**
      * @param $filePath
-     * @return bool
+     * @return void
      */
     public static function deleteDownloadFile($filePath)
     {

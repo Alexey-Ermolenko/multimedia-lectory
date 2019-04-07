@@ -71,7 +71,7 @@ class LectionsSearch extends Lections
         }
         else
         {
-            $user_id ='';
+            $user_id = Yii::$app->user->id;
         }
 
 

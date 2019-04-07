@@ -2,16 +2,13 @@
 
 namespace app\controllers;
 
-use app\components\UserHelperClass;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
 
-use app\models\User;
 use app\models\SignupForm;
 
 use app\models\PasswordResetRequestForm;
@@ -19,11 +16,9 @@ use app\models\ResetPasswordForm;
 use yii\data\ActiveDataProvider;
 use app\models\Lections;
 use app\models\Contact;
-use app\models\LectionsSearch;
 use yii\data\Pagination;
 
 
-use yii\helpers\Url;
 
 class SiteController extends Controller
 {
@@ -103,7 +98,7 @@ class SiteController extends Controller
         $pages = new Pagination([
             'totalCount' => $countQuery->count(),
             'pageSize' => 6,
-            'defaultPageSize'=>6
+            'defaultPageSize' => 6
         ]);
         $models = $query->offset($pages->offset)
             ->limit($pages->limit)
@@ -158,8 +153,7 @@ class SiteController extends Controller
     {
         //ML_TODO: actionAbout
         $model = new Contact();
-        if ($model->load(Yii::$app->request->post()) && $model->save())
-        {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $contact = Yii::$app->request->post();
             //UserHelperClass::pre(Yii::$app->request->post());
             //die();
@@ -171,17 +165,37 @@ class SiteController extends Controller
             Yii::$app->session->setFlash('aboutFormSubmitted');
             //return $this->render('about', ['model' => $model]);
             return $this->render('about', ['model' => $model]);
-        }
-        else
-        {
+        } else {
             return $this->render('about', ['model' => $model]);
         }
     }
 
-    public function actionSearch()
+    public function actionSearch($q = null)
     {
-        //ML_TODO: actionSearch
-        return $this->render('search');
+        $query = Lections::find()
+            ->filterWhere(['like', 'name', $q])
+            ->orFilterWhere(['like', 'description', $q])
+            ->orFilterWhere(['like', 'keywords', $q])
+            ->orFilterWhere(['like', 'content', $q])
+            ->orFilterWhere(['like', 'task_group', $q])
+            ->orFilterWhere(['like', 'autor', $q])
+            ->orFilterWhere(['like', 'created_date', $q])
+            ->orFilterWhere(['like', 'update_date', $q])
+            ->andWhere(['is_active' => 1])
+            ->orderBy('id DESC');
+
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('search', [
+            'dataProvider' => $dataProvider,
+            'q' => $q
+        ]);
     }
 
 
@@ -248,7 +262,7 @@ class SiteController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
-      }
+    }
 
     /*
 	//http://lectory.yii/site/add-admin
