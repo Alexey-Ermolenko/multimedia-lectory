@@ -2,14 +2,12 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Lections;
 use app\models\LectionsSearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-
-use \yii\db\Query;
 
 /**
  * LectionsController implements the CRUD actions for Lections model.
@@ -53,7 +51,7 @@ class LectionsController extends Controller
 
         $searchModel = new LectionsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['is_active'=>1])->orderBy('update_date DESC');
+        $dataProvider->query->andWhere(['is_active' => 1])->orderBy('update_date DESC');
         $dataProvider->setPagination([
             'pageSize' => 10
         ]);
@@ -80,10 +78,9 @@ class LectionsController extends Controller
 
 
         //Получение категории из бд
-        if(Yii::$app->request->queryParams['LectionsSearch']['category_id'] != null)
-        {
+        if (Yii::$app->request->queryParams['LectionsSearch']['category_id'] != null) {
             $category = Yii::$app->db->createCommand('
-                SELECT * FROM category WHERE id = '.Yii::$app->request->queryParams['LectionsSearch']['category_id']
+                SELECT * FROM category WHERE id = ' . Yii::$app->request->queryParams['LectionsSearch']['category_id']
             )->queryOne();
         }
 
@@ -105,12 +102,18 @@ class LectionsController extends Controller
      */
     public function actionView($id)
     {
-        Lections::setViewCount($id);
+        $model = $this->findRelationModel($id);
 
-        return $this->render('view', [
-            'model' => $this->findRelationModel($id),
-            'demonstrations_model' => $this->findDemonstrationsList($id),
-        ]);
+        if ($model['is_active']) {
+            Lections::setViewCount($id);
+
+            return $this->render('view', [
+                'model' => $this->findRelationModel($id),
+                'demonstrations_model' => $this->findDemonstrationsList($id),
+            ]);
+        } else {
+            return $this->redirect(['index']);
+        }
     }
 
     /**
@@ -203,17 +206,14 @@ class LectionsController extends Controller
             ->select('* ,video.autor AS video_autor ,lections.autor AS lection_autor ,lections.id AS lection_id, video.id AS video_id, lections.name AS lection_name, video.name AS video_name')
             ->from('lections')
             ->leftjoin('video', 'video.id = lections.video_id')
-            ->andWhere('lections.id = '.$id)
+            ->andWhere('lections.id = ' . $id)
             ->asArray()
             ->one();
 
 
-        if (($model) !== null)
-        {
+        if (($model) !== null) {
             return $model;
-        }
-        else
-        {
+        } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
@@ -242,8 +242,8 @@ class LectionsController extends Controller
             ->select('demonstration_time.id, demonstration_time.lection_id AS lection_id, demonstration.autor, demonstration.name, demonstration.icon_src, demonstration.src, demonstration_time.time')
             ->from('demonstration')
             ->leftJoin('demonstration_time', 'demonstration_time.demonstration_id = demonstration.id')
-            ->andWhere('demonstration_time.lection_id = '.$id)
-            ->addOrderBy(['`demonstration_time`.`time`'.'+0' => SORT_ASC])
+            ->andWhere('demonstration_time.lection_id = ' . $id)
+            ->addOrderBy(['`demonstration_time`.`time`' . '+0' => SORT_ASC])
             ->asArray()
             ->all();
 
