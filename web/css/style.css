@@ -166,8 +166,15 @@ main {
 }
 
 .card img {
-    height: 250px;
+    height: 255px;
 }
+@media (max-width: 992px) {
+    .card img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
 
 
 #demo_view_block {
@@ -182,4 +189,15 @@ main {
     width: 100%;
 }
 
-
+.index-name {
+    white-space: nowrap; /* Запрещаем перенос строк */
+    overflow: hidden; /* Обрезаем все, что не помещается в область */
+    padding: 5px; /* Поля вокруг текста */
+    text-overflow: ellipsis; /* Добавляем многоточие */
+}
+.index-description {
+    white-space: nowrap; /* Запрещаем перенос строк */
+    overflow: hidden; /* Обрезаем все, что не помещается в область */
+    padding: 5px; /* Поля вокруг текста */
+    text-overflow: ellipsis; /* Добавляем многоточие */
+}

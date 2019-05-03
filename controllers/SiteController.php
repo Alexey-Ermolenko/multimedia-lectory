@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\UserHelperClass;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -17,8 +18,6 @@ use yii\data\ActiveDataProvider;
 use app\models\Lections;
 use app\models\Contact;
 use yii\data\Pagination;
-
-
 
 class SiteController extends Controller
 {
@@ -62,6 +61,13 @@ class SiteController extends Controller
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
+    }
+
+    public function actionGetimg($text) {
+        header('Content-type: image/jpeg');
+        $image = UserHelperClass::getTextImage($text);
+        echo $image;
+        exit;
     }
 
     /**
@@ -108,7 +114,6 @@ class SiteController extends Controller
             'models' => $models,
             'pages' => $pages,
         ]);
-
     }
 
     /**
