@@ -22,17 +22,24 @@ $this->beginPage() ?>
         <?php $this->head() ?>
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script type='text/javascript' src='https://mdbootstrap.com/wp-content/themes/mdbootstrap4/js/compiled.min.js?ver=4.5.4'></script>
+        <script type='text/javascript' src="/modules/admin/web/js/compiled.min.js"></script>
         <script src="https://www.youtube.com/iframe_api"></script>
-                <!---->
+        <!---->
+
+        <!--
+        SCRIPTS
+        <script type="text/javascript" src="/modules/admin/web/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="/modules/admin/web/js/popper.min.js"></script>
+        <script type="text/javascript" src="/modules/admin/web/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/modules/admin/web/js/mdb.min.js"></script>
+        <script type='text/javascript' src="/modules/admin/web/js/compiled.min.js"></script>-->
     </head>
     <body>
     <?php $this->beginBody() ?>
     <!--Main Navigation-->
     <header>
-
         <!--Navbar-->
-        <nav class="navbar navbar-expand-sm navbar-dark blue fixed-top scrolling-navbar">
+        <nav class="navbar navbar-expand-lg navbar-dark blue fixed-top scrolling-navbar">
             <div class="container">
                 <!-- Navbar brand -->
                 <a class="navbar-brand" href="/">Мультимедиа-лекторий</a>
@@ -44,7 +51,6 @@ $this->beginPage() ?>
                 </button>
                 <!-- Collapsible content -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Links -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
                             <a class="nav-link waves-effect waves-light" href="/admin/">Главная
@@ -54,16 +60,12 @@ $this->beginPage() ?>
                         <li class="nav-item">
                             <a class="nav-link waves-effect waves-light" href="/admin/lections/">Лекции</a>
                         </li>
-
                         <li class="nav-item">
                             <a class="nav-link waves-effect waves-light" href="/admin/page/user/">Профиль</a>
                         </li>
                     </ul>
-                    <!-- Links -->
-
-                    <!-- Search form -->
-                    <form class="form-inline">
-                        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                    <form action="/site/search" class="form-inline">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Поиск лекций" aria-label="Поиск лекций" name="q">
                         <button class="btn btn-success btn-sm my-0" type="submit">Поиск</button>
                     </form>
                     <ul class="navbar-nav ml-auto nav-flex-icons">
@@ -72,7 +74,8 @@ $this->beginPage() ?>
                         {
                             ?>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i>
+                                <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-user"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-unique" aria-labelledby="navbarDropdownMenuLink" style="position: absolute;">
                                     <a class="dropdown-item waves-effect waves-light" href="/site/signup">Регистрация</a>
@@ -89,7 +92,6 @@ $this->beginPage() ?>
 								</a>
 							</li>
 							<li class="nav-item avatar dropdown">
-
 								<a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <?
                                     if (Yii::$app->user->identity->img_src)
@@ -105,7 +107,6 @@ $this->beginPage() ?>
                                         <?
                                     }
                                     ?>
-
 								</a>
 								<div class="dropdown-menu dropdown-menu-right dropdown-purple" aria-labelledby="navbarDropdownMenuLink-5">
 									<a class="dropdown-item waves-effect" href="/admin/page/user/">Профиль</a>
@@ -118,7 +119,6 @@ $this->beginPage() ?>
                     </ul>
                 </div>
                 <!-- Collapsible content -->
-
             </div>
         </nav>
         <!--/.Navbar-->
@@ -170,10 +170,8 @@ $this->beginPage() ?>
 
     </footer>
     <!--/.Footer-->
-
     <div class="hiddendiv common"></div>
     <?php $this->endBody() ?>
-
     </body>
     </html>
 <?php $this->endPage() ?>

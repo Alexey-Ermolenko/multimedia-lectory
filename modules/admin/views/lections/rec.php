@@ -13,7 +13,6 @@ $arScenarios = ArrayHelper::toArray($scenarioDataProvider->getModels());
 #Yii::$app->userHelperClass->pre($arLection);
 # Yii::$app->userHelperClass->pre($arScenarios);
 
-
 $script = <<< JS
     $(document).ready(function() {
         $('#scenarion_list').material_select();
@@ -51,7 +50,7 @@ $script = <<< JS
             window.location = '/admin/lections/rec-novideo?id='+id_lection+'&idscn='+id_scenario;
 
         });
-    });
+   });
 JS;
 $this->registerJs($script, \yii\web\View::POS_END);
 ?>

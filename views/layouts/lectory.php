@@ -1,7 +1,6 @@
 <?php
 use yii\helpers\Html;
 use app\assets\AppAsset;
-
 use  yii\helpers\Url;
 
 AppAsset::register($this);
@@ -26,14 +25,14 @@ $this->beginPage() ?>
 <?php $this->beginBody() ?>
 <!--Main Navigation-->
 <header>
-
     <!--Navbar-->
     <nav class="navbar navbar-expand-lg fixed-top scrolling-navbar navbar-dark green">
         <div class="container">
             <!-- Navbar brand -->
             <a class="navbar-brand" href="/">Мультимедиа-лекторий</a>
             <!-- Collapse button -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
