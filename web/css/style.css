@@ -174,8 +174,11 @@ main {
         height: 100%;
     }
 }
-
-
+@media (min-width: 991px) {
+    .card .card-body {
+        height: 137.6px;
+    }
+}
 
 #demo_view_block {
     padding: 0px;

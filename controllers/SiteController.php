@@ -103,8 +103,8 @@ class SiteController extends Controller
         $countQuery = clone $query;
         $pages = new Pagination([
             'totalCount' => $countQuery->count(),
-            'pageSize' => 6,
-            'defaultPageSize' => 6
+            'pageSize' => 12,
+            'defaultPageSize' => 12
         ]);
         $models = $query->offset($pages->offset)
             ->limit($pages->limit)

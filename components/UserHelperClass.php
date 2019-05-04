@@ -131,8 +131,7 @@ class UserHelperClass
      */
     public static function getTextImage($text)
     {
-        //$font = 'D:\OSPanel\domains\multimedia-lectory.local\web\font\roboto\Roboto-Bold.ttf';
-        $font = 'web/font/roboto/Roboto-Bold.ttf';
+        $font = $_SERVER['DOCUMENT_ROOT'].'/web/font/roboto/Roboto-Bold.ttf';
         $text = urldecode($text);
         $imgWidth = 350;
         $imgHeight = 250;
