@@ -119,28 +119,31 @@ $this->beginPage() ?>
 <footer class="page-footer stylish-color-dark">
     <div class="container">
         <div class="row text-center text-md-left mt-3 pb-3">
-            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
-                <h6 class="title mb-4 font-bold">Мультимедия-лекторий</h6>
+            <div class="col-md-3 mt-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h6 class="title mb-4 mt-4 font-bold">Мультимедия-лекторий</h6>
                 <p>
                     Веб-приложение для создания, редактирования и просмотра мультимедиа лекций
                 </p>
             </div>
             <hr class="w-100 clearfix d-md-none">
-            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
-                <h6 class="title mb-4 font-bold">Технологии</h6>
-                <p><a href="#!">js (jquery)/html5/css3 (bootstrap3)</a></p>
-                <p><a href="#!">PHP7/MySql/apache</a></p>
-                <p><a href="#!">Yii2</a></p>
-                <p><a href="#!">Git</a></p>
+            <div class="col-md-2 mt-4 col-lg-2 col-xl-2 mx-auto mt-3">
+                <h6 class="title mb-4 mt-4 font-bold">Технологии</h6>
+                <p><a href="https://learn.javascript.ru/js">js (jquery)/html5/css3 (bootstrap3)</a></p>
+                <p><a href="https://php.net/">PHP7/MySql/apache</a></p>
+                <p><a href="https://www.yiiframework.com/doc/guide/2.0/ru">Yii2</a></p>
+                <p><a href="https://git-scm.com/">Git</a></p>
             </div>
-            <hr class="w-100 clearfix d-md-none">
-            <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-                <h6 class="title mb-4 font-bold">Ссылки</h6>
-                <p><i class="fa fa-github" aria-hidden="true"></i> <a href="https://github.com/Alexey-Ermolenko/multimedia-lectory">github</a></p>
+            <hr class="w-100 h-100 mt-4 mb-4 clearfix d-md-none">
+            <div class="col-md-3 mt-4 col-lg-2 col-xl-2 mx-auto mt-3">
+                <h6 class="title mb-4 mt-4 font-bold">Ссылки</h6>
+                <p class="mb-4">
+                    <i class="fa fa-github" aria-hidden="true"></i>
+                    <a href="https://github.com/Alexey-Ermolenko/multimedia-lectory">github</a>
+                </p>
             </div>
-            <hr class="w-100 clearfix d-md-none">
-            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-                <h6 class="title mb-4 font-bold">Контакты</h6>
+            <hr class="w-100 h-100 mt-4 mb-4 clearfix d-md-none">
+            <div class="col-md-4 mt-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h6 class="title mt-4 mb-4 font-bold">Контакты</h6>
                 <p><i class="fa fa-home mr-3"></i> Новосибирск, РФ</p>
                 <p><i class="fa fa-envelope mr-3"></i>a.o.ermolenko@gmail.com</p>
             </div>
@@ -149,7 +152,8 @@ $this->beginPage() ?>
         <div class="row py-3 d-flex align-items-center">
             <div class="col-md-8 col-lg-9">
                 <p class="text-center text-md-left grey-text">
-                    © <?= date('Y') ?> Copyright: <a href="https://www.MDBootstrap.com"><strong> MDBootstrap.com</strong></a>
+                    © <?= date('Y') ?> Copyright: <a href="https://www.MDBootstrap.com">
+                        <strong> MDBootstrap.com</strong></a>
                     <br>
                     <strong><?= Yii::powered() ?></strong>
                 </p>

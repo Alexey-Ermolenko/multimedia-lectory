@@ -11,14 +11,16 @@ $this->title = 'Мультимедиа-лекторий | О нас';
 ?>
 <!--Main layout-->
 <div class="container">
-    <div id="carousel-example-3" class="carousel slide carousel-fade white-text" data-ride="carousel" data-interval="false">
+    <div id="carousel-example-3" class="carousel slide carousel-fade white-text" data-ride="carousel"
+         data-interval="false">
         <ol class="carousel-indicators">
             <li data-target="#carousel-example-3" data-slide-to="0" class=""></li>
             <li data-target="#carousel-example-3" data-slide-to="1" class=""></li>
             <li data-target="#carousel-example-3" data-slide-to="2" class="active"></li>
         </ol>
         <div class="carousel-inner" role="listbox">
-            <div class="carousel-item view hm-black-light" style="background-image: url('https://mdbootstrap.com/img/Photos/Horizontal/Nature/12-col/img%20(11).jpg'); background-repeat: no-repeat; background-size: cover;">
+            <div class="carousel-item view hm-black-light"
+                 style="background-image: url('https://mdbootstrap.com/img/Photos/Horizontal/Nature/12-col/img%20(11).jpg'); background-repeat: no-repeat; background-size: cover;">
                 <div class="full-bg-img flex-center white-text">
                     <ul class="animated fadeIn col-md-12">
                         <li>
@@ -28,12 +30,14 @@ $this->title = 'Мультимедиа-лекторий | О нас';
                             <p>Веб-приложение для создания, редактирования и просмотра мультимедиа лекций</p>
                         </li>
                         <li>
-                            <a target="_blank" href="https://mdbootstrap.com/getting-started/" class="btn btn-info btn-lg waves-effect waves-light" rel="nofollow">See more!</a>
+                            <a target="_blank" href="https://mdbootstrap.com/getting-started/"
+                               class="btn btn-info btn-lg waves-effect waves-light" rel="nofollow">See more!</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="carousel-item view hm-black-light" style="background-image: url('https://mdbootstrap.com/img/Photos/Slides/img%20(67).jpg'); background-repeat: no-repeat; background-size: cover;">
+            <div class="carousel-item view hm-black-light"
+                 style="background-image: url('https://mdbootstrap.com/img/Photos/Slides/img%20(67).jpg'); background-repeat: no-repeat; background-size: cover;">
                 <div class="full-bg-img flex-center white-text">
                     <ul class="animated fadeIn col-md-12">
                         <li>
@@ -45,12 +49,14 @@ $this->title = 'Мультимедиа-лекторий | О нас';
                             </p>
                         </li>
                         <li>
-                            <a target="_blank" href="https://mdbootstrap.com/bootstrap-tutorial/" class="btn btn-info btn-lg waves-effect waves-light" rel="nofollow">Read more</a>
+                            <a target="_blank" href="https://mdbootstrap.com/bootstrap-tutorial/"
+                               class="btn btn-info btn-lg waves-effect waves-light" rel="nofollow">Read more</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="carousel-item view hm-black-light active" style="background-image: url('https://mdbootstrap.com/img/Photos/Slides/img%20(97).jpg'); background-repeat: no-repeat; background-size: cover;">
+            <div class="carousel-item view hm-black-light active"
+                 style="background-image: url('https://mdbootstrap.com/img/Photos/Slides/img%20(97).jpg'); background-repeat: no-repeat; background-size: cover;">
                 <div class="full-bg-img flex-center white-text">
                     <ul class="animated fadeIn col-md-12">
                         <li>
@@ -60,7 +66,8 @@ $this->title = 'Мультимедиа-лекторий | О нас';
                             <p>Инновационный способ подачи образовательного контента</p>
                         </li>
                         <li>
-                            <a target="_blank" href="https://mdbootstrap.com/forums/forum/support/" class="btn btn-default btn-lg waves-effect waves-light" rel="nofollow">Read more</a>
+                            <a target="_blank" href="https://mdbootstrap.com/forums/forum/support/"
+                               class="btn btn-default btn-lg waves-effect waves-light" rel="nofollow">Read more</a>
                         </li>
                     </ul>
                 </div>
@@ -80,7 +87,8 @@ $this->title = 'Мультимедиа-лекторий | О нас';
             О нас
         </h2>
     </div>
-    <section id="about" class="text-center wow fadeIn" data-wow-delay="0.2s" style="animation-name: none; visibility: visible;">
+    <section id="about" class="text-center wow fadeIn" data-wow-delay="0.2s"
+             style="animation-name: none; visibility: visible;">
         <p>
             Мультимедиа-лекторий - система онлайн образования
         </p>
@@ -94,7 +102,8 @@ $this->title = 'Мультимедиа-лекторий | О нас';
         <div class="row pt-3">
             <div class="col-lg-3 mb-r">
                 <div class="card wow fadeIn" style="animation-name: none; visibility: visible;">
-                    <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(25).jpg" alt="Card image cap">
+                    <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(25).jpg"
+                         alt="Card image cap">
                     <div class="card-body">
                         <h4 class="card-title text-center">
                             Круглосуточно 24/7
@@ -108,7 +117,8 @@ $this->title = 'Мультимедиа-лекторий | О нас';
             </div>
             <div class="col-lg-3 mb-r">
                 <div class="card wow fadeIn" data-wow-delay="0.2s" style="animation-name: none; visibility: visible;">
-                    <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(14).jpg" alt="Card image cap">
+                    <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(14).jpg"
+                         alt="Card image cap">
                     <div class="card-body">
                         <h4 class="card-title text-center">
                             Абсолютно бесплатно
@@ -122,7 +132,8 @@ $this->title = 'Мультимедиа-лекторий | О нас';
             </div>
             <div class="col-lg-3 mb-r">
                 <div class="card wow fadeIn" data-wow-delay="0.4s" style="animation-name: none; visibility: visible;">
-                    <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(21).jpg" alt="Card image cap">
+                    <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(21).jpg"
+                         alt="Card image cap">
                     <div class="card-body">
                         <h4 class="card-title text-center">
                             Отборный супер контент
@@ -136,7 +147,8 @@ $this->title = 'Мультимедиа-лекторий | О нас';
             </div>
             <div class="col-lg-3 mb-r">
                 <div class="card wow fadeIn" data-wow-delay="0.6s" style="animation-name: none; visibility: visible;">
-                    <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(37).jpg" alt="Card image cap">
+                    <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(37).jpg"
+                         alt="Card image cap">
                     <div class="card-body">
                         <!--Title-->
                         <h4 class="card-title text-center">
@@ -159,7 +171,8 @@ $this->title = 'Мультимедиа-лекторий | О нас';
     <section id="contact pb-5">
         <div class="row">
             <div class="col-md-8 mb-5">
-                <div id="map-container" class="z-depth-1 wow fadeIn" style="height: 300px; animation-name: none; visibility: visible; position: relative; overflow: hidden;">
+                <div id="map-container" class="z-depth-1 wow fadeIn"
+                     style="height: 300px; animation-name: none; visibility: visible; position: relative; overflow: hidden;">
                     <iframe src="https://maps.google.com/maps?q=Novosibirsk&t=&z=10&ie=UTF8&iwloc=&output=embed"
                             frameborder="0"
                             style="border:0; height: 100%; width: 100%" allowfullscreen>
@@ -189,56 +202,51 @@ $this->title = 'Мультимедиа-лекторий | О нас';
         </div>
     </section>
     <hr>
-    <div class="card">
-        <h5 class="card-header info-color white-text text-center py-4">
-            <strong>Свяжитесь с нами</strong>
-        </h5>
-        <div class="card-body px-lg-5 pt-0">
-            <?
-            if (Yii::$app->session->hasFlash('aboutFormSubmitted'))
-            {
-                #Yii::$app->userHelperClass->pre($model->name);
-                #Yii::$app->userHelperClass->pre($model->toArray());
-                ?>
-                <br>
-                <div class="alert alert-success">
-                    Благодарим Вас за обращение к нам. Мы ответим вам как можно скорее.
-                </div>
-                <?
-            }
-            else
-            {
-                ?>
-                <form id="contact-form" action="/site/about" method="post" class="md-form" style="color: #757575;">
 
-                    <input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" />
-
-                    <input type="text" name="Contact[name]" aria-required="true" id="materialContactFormName" class="form-control" placeholder="Ваше имя">
-                    <label for="materialContactFormName"></label>
-                    <input type="email" name="Contact[email]" aria-required="true" id="materialContactFormEmail" class="form-control" placeholder="Ваше e-mail">
-                    <label for="materialContactFormEmail"></label>
-
-                    <textarea type="text" name="Contact[message]" id="materialContactFormMessage" class="form-control md-textarea" rows="3" placeholder="Сообщение"></textarea>
-                    <label for="materialContactFormMessage"></label>
-                    <div class="form-check">
-                        <input type="checkbox" name="Contact[copy_email]" class="form-check-input" id="materialContactFormCopy">
-                        <label class="form-check-label" for="materialContactFormCopy">
-                            Отправить мне копию сообщения
-                        </label>
-                    </div>
-                    <br>
-                    <div class="form-check">
-                        <p>
-                            Отправляя сообщение вы соглашаетесь с условиями обработки данных
-                        </p>
-                    </div>
-                    <button class="btn btn-outline-info btn-rounded btn-block z-depth-0 my-4 waves-effect" type="submit">
-                        Отправить
-                    </button>
-                </form>
-                <?
-            }
-            ?>
+    <?
+    if (Yii::$app->session->hasFlash('aboutFormSubmitted')) {
+        #Yii::$app->userHelperClass->pre($model->name);
+        #Yii::$app->userHelperClass->pre($model->toArray());
+        ?>
+        <br>
+        <div class="alert alert-success">
+            Благодарим Вас за обращение к нам. Мы ответим вам как можно скорее.
         </div>
-    </div>
+        <?
+    } else {
+        ?>
+        <form action="/site/about" method="post" class="border border-light p-5">
+            <p class="h4 mb-4 text-center">Свяжитесь с нами</p>
+
+            <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>"/>
+
+            <input type="text" name="Contact[name]" aria-required="true" id="materialContactFormName"
+                   class="form-control" placeholder="Ваше имя">
+            <label for="materialContactFormName"></label>
+            <input type="email" name="Contact[email]" aria-required="true" id="materialContactFormEmail"
+                   class="form-control" placeholder="Ваше e-mail">
+            <label for="materialContactFormEmail"></label>
+
+            <textarea type="text" name="Contact[message]" id="materialContactFormMessage" class="form-control rounded-0"
+                      rows="3" placeholder="Сообщение"></textarea>
+            <label for="materialContactFormMessage"></label>
+            <div class="form-check">
+                <input type="checkbox" name="Contact[copy_email]" class="form-check-input" id="materialContactFormCopy">
+                <label class="form-check-label" for="materialContactFormCopy">
+                    Отправить мне копию сообщения
+                </label>
+            </div>
+            <br>
+            <div class="form-check">
+                <p>
+                    Отправляя сообщение вы соглашаетесь с условиями обработки данных
+                </p>
+            </div>
+            <button class="btn btn-info btn-block" type="submit">
+                Отправить
+            </button>
+        </form>
+        <?
+    }
+    ?>
 </div>

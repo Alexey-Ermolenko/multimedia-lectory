@@ -10,13 +10,13 @@ use yii\helpers\Url;
             if ($model->poster)
             {
                 ?>
-                <img src="<?= $model->poster ?>" class="img-fluid" alt="<?= $model->poster?>">
+                <img src="<?= $model->poster ?>" class="lection-img img-fluid" alt="<?= $model->poster?>">
                 <?
             }
             else
             {
                 ?>
-                <img src="<?= Url::toRoute(['site/getimg', 'text' => urlencode($model->name)]) ?>" class="img-fluid"
+                <img src="<?= Url::toRoute(['site/getimg', 'text' => urlencode($model->name)]) ?>" class="lection-img img-fluid"
                      alt="<?=$model->name?>">
                 <?
             }
