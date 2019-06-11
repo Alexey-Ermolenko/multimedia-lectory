@@ -1072,18 +1072,17 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
     private function deleteLection($lectionModel)
     {
         if (stristr($lectionModel->poster, 'repository') == true) {
-            if (true == userHelperClass::rmRec(substr($lectionModel->poster, 1))) {
-                $connection = Yii::$app->db;
-                $connection->createCommand()->delete('demonstration_time', 'lection_id = ' . $lectionModel->id)->execute();
-                $connection->createCommand()->delete('command', 'lection_id = ' . $lectionModel->id)->execute();
-
-                $lectionModel->delete();
-                return $this->redirect(['lections/index']);
-            } else {
+            if (true != userHelperClass::rmRec(substr($lectionModel->poster, 1))) {
                 userHelperClass::pre("Ошибка при удалении файла " . substr($lectionModel->poster, 1) . ", попробуйте позже");
                 exit();
             }
         }
+
+        $connection = Yii::$app->db;
+        $connection->createCommand()->delete('demonstration_time', 'lection_id = ' . $lectionModel->id)->execute();
+        $connection->createCommand()->delete('command', 'lection_id = ' . $lectionModel->id)->execute();
+        $lectionModel->delete();
+        return $this->redirect(['lections/index']);
     }
 
     /**
