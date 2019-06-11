@@ -5,7 +5,7 @@ namespace app\controllers;
 namespace app\modules\admin\controllers;
 
 use app\components\userHelperClass;
-use app\Models\Category;
+use app\models\Category;
 use app\models\Demonstrations;
 use app\models\DemonstrationsSearch;
 use app\models\Lections;
