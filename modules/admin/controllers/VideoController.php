@@ -297,9 +297,15 @@ class VideoController extends Controller
                 unlink($_SERVER['DOCUMENT_ROOT'].$model->file_src);
                 $video['file_src'] = "/".$uploadVideoFile;
             }
-            else
+            else if ($_FILES['file_src']['error']==4 or !isset($video['video_url']))
             {
-                $video['file_src'] = $model->file_src;
+                $video['file_src'] = "";
+            }
+
+            if ($video['video_url'])
+            {
+                $video['file_src'] = $video['video_url'];
+                unset($video['video_url']);
             }
 
             $model->setAttributes($video, false);

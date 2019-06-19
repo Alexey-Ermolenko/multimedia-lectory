@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                 <hr>
-                <?
+                <?php
                     if( strpos($model->file_src, 'youtube') === false )
                     {
                         $is_youtube_video = false;
@@ -137,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="form-row" id="youtube_video" style="display: <?=$is_youtube_video==false ? 'none':'block'?>">
                     <div class="col-md-12">
                         <div class="md-form form-group">
-                            <input name="Video[video_url]" type="text" value="" class="form-control" id="inputAddressMD" placeholder="Ссылка на видео с youtube">
+                            <input name="Video[video_url]" type="text" value="<?=$model->file_src?>" class="form-control" id="inputAddressMD" placeholder="Ссылка на видео с youtube">
                             <label for="inputAddressMD">Видео с youtube</label>
                         </div>
                     </div>
@@ -150,7 +150,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <input name="file_src" value="" type="file">
                             </div>
                             <div class="file-path-wrapper">
-                                <input class="file-path validate" value="" type="text" placeholder="Видео файл">
+                                <input class="file-path validate" value="<?=$model->file_src?>" type="text" placeholder="Видео файл">
                             </div>
                         </div>
                     </div>
