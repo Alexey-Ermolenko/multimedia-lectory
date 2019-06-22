@@ -4,7 +4,7 @@ namespace app\controllers;
 
 namespace app\modules\admin\controllers;
 
-use app\components\userHelperClass;
+use app\components\UserHelperClass;
 use app\models\Category;
 use app\models\Demonstrations;
 use app\models\DemonstrationsSearch;
@@ -90,7 +90,7 @@ class LectionsController extends Controller
     public function actionIndex()
     {
         /*
-        Yii::$app->userHelperClass->pre(array_merge(Yii::$app->request->queryParams, ['module'=>$this->module->id]));
+        Yii::$app->UserHelperClass->pre(array_merge(Yii::$app->request->queryParams, ['module'=>$this->module->id]));
 
         SELECT user.id, username, name, lections.id
         FROM lections
@@ -105,7 +105,7 @@ class LectionsController extends Controller
         //$userModel = Lections::find();
 
         //$model = Lections::find()->all();
-        //Yii::$app->userHelperClass->pre($model);
+        //Yii::$app->UserHelperClass->pre($model);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -383,7 +383,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
             } else {
                 $lection['poster'] = $model->poster;
             }
-            //Yii::$app->userHelperClass->pre($lection);
+            //Yii::$app->UserHelperClass->pre($lection);
             //die();
             $model->setAttributes($lection, false);
             if ($model->validate()) {
@@ -391,10 +391,10 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                     # return $this->goBack('');
                     return $this->redirect(['view', 'id' => $model->id]);
                 } else {
-                    userHelperClass::pre('save error');
+                    UserHelperClass::pre('save error');
                 }
             } else {
-                userHelperClass::pre('validate error');
+                UserHelperClass::pre('validate error');
             }
 
         } else {
@@ -481,7 +481,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
 
     public function actionExport($id)
     {
-        userHelperClass::pre('actionExport');
+        UserHelperClass::pre('actionExport');
         return $this->render('edit', [
             'model' => $this->findModel($id),
         ]);
@@ -711,7 +711,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
 
                 $demo['icon_src'] = "/" . $uploadIconFile;
             } elseif ($demo['icon_src']) {
-                $file = userHelperClass::downloadFile($demo['icon_src'], "repository/user/demonstrations/" . $demo['type'] . "/icons/");
+                $file = UserHelperClass::downloadFile($demo['icon_src'], "repository/user/demonstrations/" . $demo['type'] . "/icons/");
                 if ($file) {
                     $demo['icon_src'] = '/' . $file;
                 }
@@ -742,7 +742,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 }
                 $demo['src'] = "/" . $uploadSrcFile;
             } elseif ($demo['src']) {
-                $file = userHelperClass::downloadFile($demo['src'], "repository/user/demonstrations/" . $demo['type'] . "/contents/");
+                $file = UserHelperClass::downloadFile($demo['src'], "repository/user/demonstrations/" . $demo['type'] . "/contents/");
                 if ($file) {
                     $demo['src'] = '/' . $file;
                 }
@@ -753,11 +753,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 if ($model->save()) {
                     return $this->goBack('');
                 } else {
-                    userHelperClass::pre('save error');
+                    UserHelperClass::pre('save error');
                     Yii::$app->end();
                 }
             } else {
-                userHelperClass::pre('validate error');
+                UserHelperClass::pre('validate error');
                 Yii::$app->end();
             }
         } else {
@@ -805,13 +805,13 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                         }
                     }
                 }
-                userHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->icon_src);
+                UserHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->icon_src);
 
                 $demo['icon_src'] = "/" . $uploadIconFile;
             } elseif ($demo['icon_src']) {
-                $file = userHelperClass::downloadFile($demo['icon_src'], "repository/user/demonstrations/" . $demo['type'] . "/icons/");
+                $file = UserHelperClass::downloadFile($demo['icon_src'], "repository/user/demonstrations/" . $demo['type'] . "/icons/");
                 if ($file) {
-                    userHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->icon_src);
+                    UserHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->icon_src);
                     $demo['icon_src'] = '/' . $file;
                 }
             }
@@ -839,13 +839,13 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
 
                     }
                 }
-                userHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->src);
+                UserHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->src);
 
                 $demo['src'] = "/" . $uploadSrcFile;
             } elseif ($demo['src']) {
-                $file = userHelperClass::downloadFile($demo['src'], "repository/user/demonstrations/" . $demo['type'] . "/contents/");
+                $file = UserHelperClass::downloadFile($demo['src'], "repository/user/demonstrations/" . $demo['type'] . "/contents/");
                 if ($file) {
-                    userHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->src);
+                    UserHelperClass::deleteDownloadFile($_SERVER['DOCUMENT_ROOT'] . $model->src);
                     $demo['src'] = '/' . $file;
                 }
             }
@@ -855,11 +855,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                 if ($model->save()) {
                     return $this->goBack('');
                 } else {
-                    userHelperClass::pre('save error');
+                    UserHelperClass::pre('save error');
                     Yii::$app->end();
                 }
             } else {
-                userHelperClass::pre('validate error');
+                UserHelperClass::pre('validate error');
                 Yii::$app->end();
             }
 
@@ -921,7 +921,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
             } else {
                 $lection['poster'] = "";
             }
-            //Yii::$app->userHelperClass->pre($lection);
+            //Yii::$app->UserHelperClass->pre($lection);
             //die();
             $model->setAttributes($lection, false);
             if ($model->validate()) {
@@ -929,11 +929,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                     # return $this->goBack('');
                     return $this->redirect(['view', 'id' => $model->id]);
                 } else {
-                    userHelperClass::pre('save error');
+                    UserHelperClass::pre('save error');
                     exit();
                 }
             } else {
-                userHelperClass::pre('validate error');
+                UserHelperClass::pre('validate error');
                 exit();
             }
 
@@ -1059,7 +1059,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
             if ($lectionModel->user_id == $user_id) {
                 $this->deleteLection($lectionModel);
             } else {
-                userHelperClass::pre("delete forbitten");
+                UserHelperClass::pre("delete forbitten");
                 exit();
             }
         }
@@ -1072,8 +1072,8 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
     private function deleteLection($lectionModel)
     {
         if (stristr($lectionModel->poster, 'repository') == true) {
-            if (true != userHelperClass::rmRec(substr($lectionModel->poster, 1))) {
-                userHelperClass::pre("Ошибка при удалении файла " . substr($lectionModel->poster, 1) . ", попробуйте позже");
+            if (true != UserHelperClass::rmRec(substr($lectionModel->poster, 1))) {
+                UserHelperClass::pre("Ошибка при удалении файла " . substr($lectionModel->poster, 1) . ", попробуйте позже");
                 exit();
             }
         }
@@ -1099,7 +1099,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
         try {
             $demoModel = $this->findDemoModel($id);
         } catch (NotFoundHttpException $e) {
-            userHelperClass::pre($e);
+            UserHelperClass::pre($e);
             exit();
         }
 
@@ -1109,7 +1109,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                     $this->findDemoModel($id)->delete();
                     return $this->redirect(['lections/slides/']);
                 } else {
-                    userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
+                    UserHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
                     exit();
                 }
             } else {
@@ -1124,7 +1124,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                         $this->findDemoModel($id)->delete();
                         return $this->redirect(['lections/slides/']);
                     } else {
-                        userHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
+                        UserHelperClass::pre("Произошла ошибка при удалении файла, попробуйте позже");
                         exit();
                     }
                 } else {
@@ -1132,7 +1132,7 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                     return $this->redirect(['lections/slides/']);
                 }
             } else {
-                userHelperClass::pre("forbitten");
+                UserHelperClass::pre("forbitten");
                 exit();
             }
         }
