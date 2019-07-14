@@ -378,7 +378,11 @@ WHERE l.is_active = 1 AND l.id NOT IN (SELECT l.id FROM lections l WHERE l.is_ac
                         }
                     }
                 }
-                unlink($_SERVER['DOCUMENT_ROOT'] . $model->poster);
+
+                if ($model->poster) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . $model->poster);
+                }
+
                 $lection['poster'] = "/" . $uploadPosterFile;
             } else {
                 $lection['poster'] = $model->poster;
